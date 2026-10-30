@@ -1,0 +1,14 @@
+# Copy this file and replace the fictional vacancy before importing.
+company: Example Laboratory (fictional)
+title: Laboratory Operations Associate
+location: Example City
+source_url: https://example.org/jobs/operations
+description: |
+  FICTIONAL EXAMPLE: Coordinate sample records, laboratory schedules and
+  research documentation. Replace this with the actual job description.
+# Optional labels for later reporting:
+source: Company website
+role_family: Scientific operations
+# Optional: country, work_mode, domain, deadline, salary_text.
+# Scores, evidence and fit explanations are optional; no AI call is made.
+

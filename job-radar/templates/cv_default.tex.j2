@@ -1,0 +1,136 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[scaled=.95]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[a4paper,margin=16mm,top=14mm,bottom=13mm]{geometry}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\usepackage{needspace}
+
+\definecolor{Charcoal}{HTML}{2C2C2C}
+\definecolor{DeepNavy}{HTML}{1A2F4A}
+
+\setlength{\parindent}{0pt}
+\setlist[itemize]{
+  leftmargin=*,
+  topsep=0pt,
+  itemsep=1.6pt,
+  parsep=0pt,
+  partopsep=0pt,
+  before=\vspace{-2pt},
+  after=\vspace{3pt}
+}
+\newcommand{\role}[1]{\textbf{#1}}
+\newcommand{\location}[1]{\textit{#1}}
+\newcommand{\daterange}[1]{\hfill \textit{#1}}
+\newcommand{\cvsection}[1]{%
+  \vspace{5pt}
+  {\large\textbf{\textcolor{DeepNavy}{#1}}}\par
+  \vspace{1.5pt}
+  \hrule height 0.4pt
+  \vspace{3pt}
+}
+\newcommand{\pubentry}[1]{\hangindent=5mm\hangafter=1 #1\par\vspace{2pt}}
+
+\begin{document}
+\pagestyle{empty}
+\color{Charcoal}
+
+((* if contact.photo_path *))
+% Upload ((( contact.photo_path | tex ))) to the same Overleaf project.
+\newcommand{\photowidth}{28mm}
+\newcommand{\photoheight}{35mm}
+\newcommand{\photox}{166mm}
+\newcommand{\photoy}{10mm}
+\begin{textblock*}{\photowidth}(\photox,\photoy)
+\noindent
+\IfFileExists{((( contact.photo_path )))}{%
+  \includegraphics[
+    width=\photowidth,
+    height=\photoheight,
+    keepaspectratio,
+    angle=0,
+    origin=c
+  ]{((( contact.photo_path )))}%
+}{%
+  \fbox{\parbox[c][\photoheight][c]{\photowidth}{%
+    \centering Add\\((( contact.photo_path | tex )))
+  }}%
+}
+\end{textblock*}
+((* endif *))
+
+\begin{minipage}[t]{0.74\textwidth}
+\vspace{0pt}
+{\LARGE \textbf{((( contact.name | tex )))}}\\[3pt]
+{\normalsize\color{DeepNavy}((( headline | tex )))}\\[4pt]
+((( contact.location | tex ))) \;|\; ((( contact.phone | tex ))) \;|\;
+\href{mailto:((( contact.email | tex )))}{((( contact.email | tex )))}\\[2pt]
+\href{((( contact.linkedin_url | tex )))}{((( contact.linkedin_label | tex )))}
+\end{minipage}
+
+\cvsection{Profile}
+((( profile_text | tex )))
+
+\cvsection{Experience}
+((* for item in experiences *))
+\role{((( item.role | tex )))} \location{((( item.location | tex )))} \daterange{((( item.dates | tex )))}\par
+((* if item.subtitle *))\textit{((( item.subtitle | tex )))}\par((* endif *))
+\begin{itemize}
+((* for bullet in item.bullets *))
+\item ((( bullet.text | tex )))
+((* endfor *))
+\end{itemize}
+((* endfor *))
+
+((* if publications *))
+\cvsection{Selected publications}
+{\small
+((* for item in publications *))
+\pubentry{\href{((( item.url | tex )))}{((( item.citation | tex )))}}%
+((* endfor *))
+}
+((* endif *))
+
+\cvsection{Core competencies}
+((* for item in skills *))
+\textbf{((( item.label | tex ))):} ((( item.text | tex )))((* if not loop.last *))\\[2pt]((* endif *))
+((* endfor *))
+\par
+
+\cvsection{Languages}
+((( languages | join(", ") | tex )))
+
+\Needspace{10\baselineskip}
+\cvsection{Education}
+((* for item in education *))
+\role{((( item.institution | tex )))} --- ((( item.degree | tex ))) \daterange{((( item.dates | tex )))}\\
+((* if item.detail *))((( item.detail | tex )))\\((* endif *))
+((* endfor *))
+
+((* if additional_experience *))
+\Needspace{8\baselineskip}
+\cvsection{Additional experience}
+((* for item in additional_experience *))
+\textbf{((( item.role | tex )))} \location{((( item.location | tex )))} \daterange{((( item.dates | tex )))}\par
+((( item.text | tex )))((* if not loop.last *))\\[3pt]((* endif *))
+((* endfor *))
+\par
+((* endif *))
+
+((* if contact.additional_information | default('') *))
+\cvsection{Additional information}
+((( contact.additional_information | tex )))
+((* endif *))
+
+\cvsection{Interests}
+((( interests | join(", ") | tex ))).
+
+\end{document}

@@ -1,0 +1,66 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[scaled=0.95]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[a4paper,left=18mm,right=18mm,top=15mm,bottom=15mm]{geometry}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\usepackage{ragged2e}
+\definecolor{navy}{HTML}{173452}
+\definecolor{softgray}{HTML}{5F6872}
+\definecolor{textgray}{HTML}{2F2F2F}
+\color{textgray}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{7pt}
+\setlength{\emergencystretch}{2em}
+\urlstyle{same}
+\pagestyle{empty}
+\begin{document}
+\RaggedRight
+{\color{navy}\bfseries\fontsize{20}{22}\selectfont ((( contact.name | tex )))}\par
+{\color{softgray}\fontsize{10.7}{12.5}\selectfont ((( headline | default('') | tex )))}\par
+\vspace{6mm}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{66mm}@{}}
+\begin{minipage}[t]{\linewidth}
+((* if letter.show_recipient_block | default(true) *))
+\textbf{((( company | tex )))}\par
+((* if letter.recipient_name *))((( letter.recipient_name | tex )))\par
+((* endif *))
+((* if letter.recipient_role *))((( letter.recipient_role | tex )))\par
+((* endif *))
+((* else *))
+\mbox{}
+((* endif *))
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}
+\small
+((( contact.location | tex )))\par
+((( contact.phone | tex )))\par
+\href{mailto:((( contact.email | tex )))}{((( contact.email | tex )))}\par
+((* if contact.linkedin | default('') *))\href{((( contact.linkedin | tex )))}{LinkedIn}\par
+((* endif *))
+\vspace{3mm}
+((( date_line | tex )))\par
+\end{minipage}
+\end{tabularx}
+\vspace{6mm}
+
+{\color{navy}\bfseries\fontsize{12.5}{14}\selectfont ((( letter.subject | tex )))}\par
+
+((( letter.salutation | tex )))\par
+
+((* for paragraph in letter.paragraphs *))
+((( paragraph | tex )))\par
+
+((* endfor *))
+\begin{samepage}
+((( letter.closing | tex )))\par
+\vspace{3mm}
+\textbf{((( contact.name | tex )))}
+\end{samepage}
+\end{document}

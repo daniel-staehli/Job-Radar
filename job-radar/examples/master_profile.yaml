@@ -1,0 +1,113 @@
+# FICTIONAL DEMONSTRATION PROFILE. Replace every example fact before real use.
+# This file describes no real person, institution, publication or qualification.
+example_only: true
+candidate_summary: |
+  Alex Example is a fictional environmental researcher with experience in
+  water-sample analysis, reproducible laboratory methods and project coordination.
+contact:
+  name: Alex Example
+  location: Example City
+  phone: "[your phone number]"
+  email: candidate@example.org
+  linkedin_url: https://example.org/profile
+  linkedin_label: example.org/profile
+  photo_path: null
+  additional_information: "Fictional demonstration profile; replace before applying."
+allowed_headline_tags:
+  - Environmental research
+  - Laboratory analysis
+  - Scientific communication
+  - Project coordination
+experiences:
+  - key: sample_research
+    role: Research Associate, Example Institute
+    location: Example City
+    dates: 2021-2025
+    subtitle: Fictional environmental monitoring project
+    bullets:
+      - id: sample_project
+        text: Planned a fictional water-monitoring study and documented its sampling schedule.
+      - id: sample_protocol
+        text: Developed a repeatable sample-handling checklist for a demonstration laboratory.
+      - id: sample_collaboration
+        text: Coordinated sample records with a fictional partner laboratory.
+      - id: sample_communication
+        text: Presented research updates and prepared onboarding notes for new team members.
+      - id: sample_methods
+        text: Analysed example measurements using spreadsheets and introductory Python scripts.
+  - key: sample_assistant
+    role: Laboratory Assistant, Example College
+    location: Example Town
+    dates: 2019-2021
+    subtitle: Fictional teaching laboratory
+    bullets:
+      - id: sample_quality
+        text: Checked demonstration measurements for missing values and inconsistent units.
+      - id: sample_inventory
+        text: Maintained a teaching-material inventory and documented replenishment needs.
+skills:
+  - id: skill_communication
+    label: Communication
+    text: Research presentations, written procedures and onboarding notes.
+  - id: skill_collaboration
+    label: Coordination
+    text: Sampling schedules, laboratory handovers and shared records.
+  - id: skill_methods
+    label: Laboratory methods
+    text: Demonstration water sampling, sample handling and quality checks.
+  - id: skill_analysis
+    label: Data analysis
+    text: Spreadsheets and introductory Python scripting.
+publications:
+  - id: pub_sample_protocol
+    citation: "Example, A. (2024). A fictional sample-handling checklist. Demonstration publication."
+    url: https://example.org/publications/checklist
+  - id: pub_sample_monitoring
+    citation: "Example, A. (2023). A fictional water-monitoring exercise. Demonstration publication."
+    url: https://example.org/publications/monitoring
+  - id: pub_sample_quality
+    citation: "Example, A. (2021). A fictional teaching-data quality exercise. Demonstration publication."
+    url: https://example.org/publications/quality
+additional_experience:
+  - id: add_sample_workshop
+    role: Volunteer workshop organiser
+    location: Example Community Centre
+    dates: "2024"
+    text: Coordinated materials for a fictional introductory science workshop.
+  - id: add_sample_tool
+    role: Personal demonstration project
+    location: Independent
+    dates: "2025"
+    text: Built a small fictional spreadsheet tool to track sample-processing steps.
+education:
+  - institution: Example University
+    degree: MSc Environmental Science (fictional)
+    dates: 2017-2019
+    detail: Demonstration degree; replace with your verified education.
+  - institution: Example College
+    degree: BSc Natural Sciences (fictional)
+    dates: 2014-2017
+    detail: Demonstration degree; replace with your verified education.
+languages:
+  - English (fictional example proficiency)
+interests:
+  - Community science
+  - Walking
+never_claim:
+  - pattern: software engineer
+    reason: The example profile supports introductory scripting only.
+  - pattern: licensed professional engineer
+    reason: No professional engineering licence is included in this fictional profile.
+search_preferences:
+  role_families:
+    - Laboratory coordination
+    - Environmental research
+    - Scientific support
+  goals:
+    - Find roles matching the verified skills supplied in this profile.
+    - Review location and eligibility requirements before applying.
+  regions:
+    - Replace with your preferred region
+  work_modes:
+    - onsite
+    - hybrid

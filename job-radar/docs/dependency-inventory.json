@@ -1,0 +1,874 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-02",
+  "project_version": "0.8.0",
+  "scope": "Source-only release; dependency implementation files, wheels, binaries and environments are not included.",
+  "graph_note": "Roles traverse the full lock graph, including conditional edges; markers remain on dependencies. Build requirements are separate and not locked.",
+  "evidence_note": "Notices were copied byte-for-byte from exact-version distribution metadata and checked against its RECORD. This does not independently attest installed package code or every wheel platform.",
+  "dependencies": [
+    {
+      "name": "annotated-types",
+      "version": "0.8.0",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/annotated-types/annotated-types",
+      "pypi_release": "https://pypi.org/project/annotated-types/0.8.0/",
+      "distribution_metadata_sha256": "614985b278f601b8ef863f82783b991cc3ada4b89f592eb71c7c48c5f2ef2298",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/annotated-types-0.8.0/licenses/LICENSE",
+          "upstream_distribution_path": "annotated_types-0.8.0.dist-info/licenses/LICENSE",
+          "sha256": "fe1049884b1a0d9342901e88e07f32925d24b3121d9972b6a6805fb9824b095d",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/5f/56/a8120250d128bed162cd73c76d45f6ef9991f3e068f62a8ee060afa3104a/annotated_types-0.8.0.tar.gz",
+        "hash": "sha256:13b2beaad985e05e2d6407ee4c4f35590b11f8d693a258a561055cac8f64cab7"
+      }
+    },
+    {
+      "name": "anyio",
+      "version": "4.14.2",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/agronholm/anyio",
+      "pypi_release": "https://pypi.org/project/anyio/4.14.2/",
+      "distribution_metadata_sha256": "c5e6fc4dfd833319913b287be7a30d9935e9208c7ef917630621855aaac4d419",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/anyio-4.14.2/licenses/LICENSE",
+          "upstream_distribution_path": "anyio-4.14.2.dist-info/licenses/LICENSE",
+          "sha256": "5361ac9dc58f2ef5fd2e9b09c68297c17f04950909bbc8023bdb82eacf22c2b0",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "idna"
+        },
+        {
+          "name": "typing-extensions",
+          "marker": "python_full_version < '3.13'"
+        }
+      ],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/61/cc/a381afa6efea9f496eff839d4a6a1aed3bfafc7b3ab4b0d1b243a12573dd/anyio-4.14.2.tar.gz",
+        "hash": "sha256:cfa139f3ed1a23ee8f88a145ddb5ac7605b8bbfd8592baacd7ce3d8bb4313c7f"
+      }
+    },
+    {
+      "name": "certifi",
+      "version": "2026.7.22",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "MPL-2.0",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/certifi/python-certifi",
+      "pypi_release": "https://pypi.org/project/certifi/2026.7.22/",
+      "distribution_metadata_sha256": "ef5af1638fbb23676ac3c5777dfcfc2cd9c348fe4172ed5ba3d277655b248090",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/certifi-2026.7.22/licenses/LICENSE",
+          "upstream_distribution_path": "certifi-2026.7.22.dist-info/licenses/LICENSE",
+          "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/a3/c2/24167ea9858356b47a87a50d39908bfdb72ceeefe0041586e704e5376b3a/certifi-2026.7.22.tar.gz",
+        "hash": "sha256:741e2c3b351ddf169a738da9f2c048608ff7f2c5cc02f1ebc6b118bb090d5d55"
+      }
+    },
+    {
+      "name": "colorama",
+      "version": "0.4.6",
+      "roles": [
+        "runtime-transitive",
+        "development-transitive"
+      ],
+      "license_expression": "BSD-3-Clause",
+      "license_evidence": "distribution license text",
+      "project_url": "https://github.com/tartley/colorama",
+      "pypi_release": "https://pypi.org/project/colorama/0.4.6/",
+      "distribution_metadata_sha256": "7baed29eb50c3b29bdb33ff84e3177bf1bc05784f7685ecdcaa4471c7dd810cc",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/colorama-0.4.6/licenses/LICENSE.txt",
+          "upstream_distribution_path": "colorama-0.4.6.dist-info/licenses/LICENSE.txt",
+          "sha256": "cac35c02686e5d04a5a7140bfb3b36e73aed496656e891102e428886d7930318",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz",
+        "hash": "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"
+      }
+    },
+    {
+      "name": "distro",
+      "version": "1.9.0",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "Apache-2.0",
+      "license_evidence": "distribution license text",
+      "project_url": "https://github.com/python-distro/distro",
+      "pypi_release": "https://pypi.org/project/distro/1.9.0/",
+      "distribution_metadata_sha256": "31632ab2de5591131091b3397bdcdf797718579d85a75186f06839dd0c09e81d",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/distro-1.9.0/LICENSE",
+          "upstream_distribution_path": "distro-1.9.0.dist-info/LICENSE",
+          "sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/fc/f8/98eea607f65de6527f8a2e8885fc8015d3e6f5775df186e443e0964a11c3/distro-1.9.0.tar.gz",
+        "hash": "sha256:2fa77c6fd8940f116ee1d6b94a2f90b13b5ea8d019b98bc8bafdcabcdd9bdbed"
+      }
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/python-hyper/h11",
+      "pypi_release": "https://pypi.org/project/h11/0.16.0/",
+      "distribution_metadata_sha256": "28f326098ac09fcba79b8f180f96087c841fe2456215cb7b872a9c7d5cd19d64",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/h11-0.16.0/licenses/LICENSE.txt",
+          "upstream_distribution_path": "h11-0.16.0.dist-info/licenses/LICENSE.txt",
+          "sha256": "37db5bb85926db28a427a25867f10b1232003aea1be69ccb851138adb8e6f361",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/01/ee/02a2c011bdab74c6fb3c75474d40b3052059d95df7e73351460c8588d963/h11-0.16.0.tar.gz",
+        "hash": "sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1"
+      }
+    },
+    {
+      "name": "httpcore",
+      "version": "1.0.9",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "BSD-3-Clause",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/encode/httpcore",
+      "pypi_release": "https://pypi.org/project/httpcore/1.0.9/",
+      "distribution_metadata_sha256": "fe2d4fda6199128978779e0cf27f3c045c531863fcdd987eacc74f3a18d41c21",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/httpcore-1.0.9/licenses/LICENSE.md",
+          "upstream_distribution_path": "httpcore-1.0.9.dist-info/licenses/LICENSE.md",
+          "sha256": "fdcb59154c74cbaba16a11242f7740bea9f23d6feb5547917d8c5f94a80392a5",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "certifi"
+        },
+        {
+          "name": "h11"
+        }
+      ],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/06/94/82699a10bca87a5556c9c59b5963f2d039dbd239f25bc2a63907a05a14cb/httpcore-1.0.9.tar.gz",
+        "hash": "sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8"
+      }
+    },
+    {
+      "name": "httpx",
+      "version": "0.28.1",
+      "roles": [
+        "runtime-direct"
+      ],
+      "license_expression": "BSD-3-Clause",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/encode/httpx",
+      "pypi_release": "https://pypi.org/project/httpx/0.28.1/",
+      "distribution_metadata_sha256": "febb9b0f8f3e80d57c8199c304f35c4336e8581d1d18d7983c92766b82793b25",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/httpx-0.28.1/licenses/LICENSE.md",
+          "upstream_distribution_path": "httpx-0.28.1.dist-info/licenses/LICENSE.md",
+          "sha256": "4ec59d544f12b5f539a3a716fd321ac58ccd8030b465221f2c880200cdf28d8d",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "anyio"
+        },
+        {
+          "name": "certifi"
+        },
+        {
+          "name": "httpcore"
+        },
+        {
+          "name": "idna"
+        }
+      ],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/b1/df/48c586a5fe32a0f01324ee087459e112ebb7224f646c0b5023f5e79e9956/httpx-0.28.1.tar.gz",
+        "hash": "sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc"
+      }
+    },
+    {
+      "name": "idna",
+      "version": "3.18",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "BSD-3-Clause",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/kjd/idna",
+      "pypi_release": "https://pypi.org/project/idna/3.18/",
+      "distribution_metadata_sha256": "46dfe6e5ac462d0f680ecd9abcf66e829b6a2334824b4d9e3979b31135caf281",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/idna-3.18/licenses/LICENSE.md",
+          "upstream_distribution_path": "idna-3.18.dist-info/licenses/LICENSE.md",
+          "sha256": "1a9a4f0e3d479a27240ddd59a9137a66ab4a0f9dfdc8ca6188cc0bfd85187f04",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/cd/63/9496c57188a2ee585e0f1db071d75089a11e98aa86eb99d9d7618fc1edce/idna-3.18.tar.gz",
+        "hash": "sha256:ffb385a7e039654cef1ab9ef32c6fafe283c0c0467bba1d9029738ce4a14a848"
+      }
+    },
+    {
+      "name": "iniconfig",
+      "version": "2.3.0",
+      "roles": [
+        "development-transitive"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pytest-dev/iniconfig",
+      "pypi_release": "https://pypi.org/project/iniconfig/2.3.0/",
+      "distribution_metadata_sha256": "40d773f84e4e112f495bbf4f1be9cbd2d456c0aeb6ef5311f75d1bf322f2165b",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/iniconfig-2.3.0/licenses/LICENSE",
+          "upstream_distribution_path": "iniconfig-2.3.0.dist-info/licenses/LICENSE",
+          "sha256": "3409fa91f7ace557894632676656e32264fe5ef7581535725dc9a23774551bd4",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/72/34/14ca021ce8e5dfedc35312d08ba8bf51fdd999c576889fc2c24cb97f4f10/iniconfig-2.3.0.tar.gz",
+        "hash": "sha256:c76315c77db068650d49c5b56314774a7804df16fee4402c1f19d6d15d8c4730"
+      }
+    },
+    {
+      "name": "jinja2",
+      "version": "3.1.6",
+      "roles": [
+        "runtime-direct"
+      ],
+      "license_expression": "BSD-3-Clause",
+      "license_evidence": "distribution license text",
+      "project_url": "https://github.com/pallets/jinja/",
+      "pypi_release": "https://pypi.org/project/jinja2/3.1.6/",
+      "distribution_metadata_sha256": "68c5548fb67c4132a13898d9b31ec50c6bea2abdd915d921f214355c3a6499c8",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/jinja2-3.1.6/licenses/LICENSE.txt",
+          "upstream_distribution_path": "jinja2-3.1.6.dist-info/licenses/LICENSE.txt",
+          "sha256": "3b49dcee4105eb37bac10faf1be260408fe85d252b8e9df2e0979fc1e094437b",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "markupsafe"
+        }
+      ],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz",
+        "hash": "sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d"
+      }
+    },
+    {
+      "name": "jiter",
+      "version": "0.16.0",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pydantic/jiter/",
+      "pypi_release": "https://pypi.org/project/jiter/0.16.0/",
+      "distribution_metadata_sha256": "b8a2a1acc02e9e304ad6dc719ba2708a677e3d72c106cd1f5e73eb46b8c32361",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/jiter-0.16.0/licenses/LICENSE",
+          "upstream_distribution_path": "jiter-0.16.0.dist-info/licenses/LICENSE",
+          "sha256": "e65c152aa65deaaa52019855bf1bbce4a0d592a048cb523b6ca691965741241e",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/1d/1f/10936e16d8860c70698a1aa939a46aa0224813b782bce4e000e637da0b2d/jiter-0.16.0.tar.gz",
+        "hash": "sha256:7b24c3492c5f4f84a37946ad9cf504910cf6a782d6a4e0689b6673c5894b4a1c"
+      }
+    },
+    {
+      "name": "markupsafe",
+      "version": "3.0.3",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "BSD-3-Clause",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pallets/markupsafe/",
+      "pypi_release": "https://pypi.org/project/markupsafe/3.0.3/",
+      "distribution_metadata_sha256": "f0ae5dbb09d50fb5f7632c3d53f0220995ef76019e5892e0a545740136a4e3cb",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/markupsafe-3.0.3/licenses/LICENSE.txt",
+          "upstream_distribution_path": "markupsafe-3.0.3.dist-info/licenses/LICENSE.txt",
+          "sha256": "4631ec0db5fd90a547e336817264c6798214338146f8ac94b4a57f96ee8c9ec4",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/7e/99/7690b6d4034fffd95959cbe0c02de8deb3098cc577c67bb6a24fe5d7caa7/markupsafe-3.0.3.tar.gz",
+        "hash": "sha256:722695808f4b6457b320fdc131280796bdceb04ab50fe1795cd540799ebe1698"
+      }
+    },
+    {
+      "name": "openai",
+      "version": "2.49.0",
+      "roles": [
+        "runtime-direct"
+      ],
+      "license_expression": "Apache-2.0",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/openai/openai-python",
+      "pypi_release": "https://pypi.org/project/openai/2.49.0/",
+      "distribution_metadata_sha256": "2f67838d795a768e80504b70685f7a5dc35f37c525f493ea35d4298ac37dad38",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/openai-2.49.0/licenses/LICENSE",
+          "upstream_distribution_path": "openai-2.49.0.dist-info/licenses/LICENSE",
+          "sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "anyio"
+        },
+        {
+          "name": "distro"
+        },
+        {
+          "name": "httpx"
+        },
+        {
+          "name": "jiter"
+        },
+        {
+          "name": "pydantic"
+        },
+        {
+          "name": "sniffio"
+        },
+        {
+          "name": "tqdm"
+        },
+        {
+          "name": "typing-extensions"
+        }
+      ],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/d3/9a/275bee8349b766906741223b98c668fcd4e17e1982a87597778743b4156f/openai-2.49.0.tar.gz",
+        "hash": "sha256:80f934333b5b83cef2fde9af7151dacaa72e150f43f92b7675f7647ca6157f48"
+      }
+    },
+    {
+      "name": "packaging",
+      "version": "26.2",
+      "roles": [
+        "development-transitive"
+      ],
+      "license_expression": "Apache-2.0 OR BSD-2-Clause",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pypa/packaging",
+      "pypi_release": "https://pypi.org/project/packaging/26.2/",
+      "distribution_metadata_sha256": "4f9cbcd7933415a4793f7767c98a2b6a512c823fc81c87337815705f230ecabf",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/packaging-26.2/licenses/LICENSE",
+          "upstream_distribution_path": "packaging-26.2.dist-info/licenses/LICENSE",
+          "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48",
+          "matches_distribution_record": true
+        },
+        {
+          "path": "third_party_licenses/packaging-26.2/licenses/LICENSE.APACHE",
+          "upstream_distribution_path": "packaging-26.2.dist-info/licenses/LICENSE.APACHE",
+          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+          "matches_distribution_record": true
+        },
+        {
+          "path": "third_party_licenses/packaging-26.2/licenses/LICENSE.BSD",
+          "upstream_distribution_path": "packaging-26.2.dist-info/licenses/LICENSE.BSD",
+          "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/d7/f1/e7a6dd94a8d4a5626c03e4e99c87f241ba9e350cd9e6d75123f992427270/packaging-26.2.tar.gz",
+        "hash": "sha256:ff452ff5a3e828ce110190feff1178bb1f2ea2281fa2075aadb987c2fb221661"
+      }
+    },
+    {
+      "name": "pluggy",
+      "version": "1.6.0",
+      "roles": [
+        "development-transitive"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://pypi.org/project/pluggy/",
+      "pypi_release": "https://pypi.org/project/pluggy/1.6.0/",
+      "distribution_metadata_sha256": "7438c35ee25a095eb7416f84b461c2d74425c5e734ad54c3912453c65244e01c",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/pluggy-1.6.0/licenses/LICENSE",
+          "upstream_distribution_path": "pluggy-1.6.0.dist-info/licenses/LICENSE",
+          "sha256": "d6b65e6c213a5d0b577911d34d6e5949b9f59d76c238c5071a2f3fc16cfb2606",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/f9/e2/3e91f31a7d2b083fe6ef3fa267035b518369d9511ffab804f839851d2779/pluggy-1.6.0.tar.gz",
+        "hash": "sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3"
+      }
+    },
+    {
+      "name": "pydantic",
+      "version": "2.13.4",
+      "roles": [
+        "runtime-direct"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pydantic/pydantic",
+      "pypi_release": "https://pypi.org/project/pydantic/2.13.4/",
+      "distribution_metadata_sha256": "d1e56c3412492512fb6b59a9dfc25ab7af2a8204585cd7bca000513023133394",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/pydantic-2.13.4/licenses/LICENSE",
+          "upstream_distribution_path": "pydantic-2.13.4.dist-info/licenses/LICENSE",
+          "sha256": "a9e186f3ca16b5eef84318e7a701721351a00cb7b8ae3a4394b67b49e3529ef3",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "annotated-types"
+        },
+        {
+          "name": "pydantic-core"
+        },
+        {
+          "name": "typing-extensions"
+        },
+        {
+          "name": "typing-inspection"
+        }
+      ],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/18/a5/b60d21ac674192f8ab0ba4e9fd860690f9b4a6e51ca5df118733b487d8d6/pydantic-2.13.4.tar.gz",
+        "hash": "sha256:c40756b57adaa8b1efeeced5c196f3f3b7c435f90e84ea7f443901bec8099ef6"
+      }
+    },
+    {
+      "name": "pydantic-core",
+      "version": "2.46.4",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pydantic/pydantic/tree/main/pydantic-core",
+      "pypi_release": "https://pypi.org/project/pydantic-core/2.46.4/",
+      "distribution_metadata_sha256": "e2d0298dfb8712190ad250722e11a46a4391e71d687d5c7667c09e935cadc63b",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/pydantic-core-2.46.4/licenses/LICENSE",
+          "upstream_distribution_path": "pydantic_core-2.46.4.dist-info/licenses/LICENSE",
+          "sha256": "fbe7f615f18d135c07000e5a86325db27f42c7729699ef166ac1f7a3f4586bf4",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "typing-extensions"
+        }
+      ],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/9d/56/921726b776ace8d8f5db44c4ef961006580d91dc52b803c489fafd1aa249/pydantic_core-2.46.4.tar.gz",
+        "hash": "sha256:62f875393d7f270851f20523dd2e29f082bcc82292d66db2b64ea71f64b6e1c1"
+      }
+    },
+    {
+      "name": "pygments",
+      "version": "2.20.0",
+      "roles": [
+        "development-transitive"
+      ],
+      "license_expression": "BSD-2-Clause",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pygments/pygments",
+      "pypi_release": "https://pypi.org/project/pygments/2.20.0/",
+      "distribution_metadata_sha256": "e0528f51b30427fae94723662ba622f8d8db2a4d8d3f1365698d67a52450a845",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/pygments-2.20.0/licenses/AUTHORS",
+          "upstream_distribution_path": "pygments-2.20.0.dist-info/licenses/AUTHORS",
+          "sha256": "0db603a5f4499f690c4425477ff664c166da325d3acc3b5a8d4de3db072443d0",
+          "matches_distribution_record": true
+        },
+        {
+          "path": "third_party_licenses/pygments-2.20.0/licenses/LICENSE",
+          "upstream_distribution_path": "pygments-2.20.0.dist-info/licenses/LICENSE",
+          "sha256": "a9d66f1d526df02e29dce73436d34e56e8632f46c275bbdffc70569e882f9f17",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/c3/b2/bc9c9196916376152d655522fdcebac55e66de6603a76a02bca1b6414f6c/pygments-2.20.0.tar.gz",
+        "hash": "sha256:6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f"
+      }
+    },
+    {
+      "name": "pypdf",
+      "version": "6.19.0",
+      "roles": [
+        "runtime-direct"
+      ],
+      "license_expression": "BSD-3-Clause",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/py-pdf/pypdf",
+      "pypi_release": "https://pypi.org/project/pypdf/6.19.0/",
+      "distribution_metadata_sha256": "c4f428636f3cb180014024dfb4414b41b8c75b568ffe4a06beeb5175b311c6b5",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/pypdf-6.19.0/licenses/LICENSE",
+          "upstream_distribution_path": "pypdf-6.19.0.dist-info/licenses/LICENSE",
+          "sha256": "a97ac230e5f33ef10a5367a850eb01f91f1a0b064e34742c7794d2294557f524",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/1f/ac/63d71aaedb59acbcdef491e6ca6469165e3771c9c74358204818fd9bc5a6/pypdf-6.19.0.tar.gz",
+        "hash": "sha256:bbc43aca292369ccc6cbc8a921991ecf2538a3587ab5a116eff06c321d647155"
+      }
+    },
+    {
+      "name": "pytest",
+      "version": "8.4.2",
+      "roles": [
+        "development-direct"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pytest-dev/pytest",
+      "pypi_release": "https://pypi.org/project/pytest/8.4.2/",
+      "distribution_metadata_sha256": "93d6c5ef0a9714d53716243035037b77fa7d5f970596c48433887cf57f7f675a",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/pytest-8.4.2/licenses/AUTHORS",
+          "upstream_distribution_path": "pytest-8.4.2.dist-info/licenses/AUTHORS",
+          "sha256": "c2017d6288262cf9c39aecc8e51df3422a9f2bbca1e4b55d28491022070c7577",
+          "matches_distribution_record": true
+        },
+        {
+          "path": "third_party_licenses/pytest-8.4.2/licenses/LICENSE",
+          "upstream_distribution_path": "pytest-8.4.2.dist-info/licenses/LICENSE",
+          "sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "colorama",
+          "marker": "sys_platform == 'win32'"
+        },
+        {
+          "name": "iniconfig"
+        },
+        {
+          "name": "packaging"
+        },
+        {
+          "name": "pluggy"
+        },
+        {
+          "name": "pygments"
+        }
+      ],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/a3/5c/00a0e072241553e1a7496d638deababa67c5058571567b92a7eaa258397c/pytest-8.4.2.tar.gz",
+        "hash": "sha256:86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01"
+      }
+    },
+    {
+      "name": "pyyaml",
+      "version": "6.0.3",
+      "roles": [
+        "runtime-direct"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/yaml/pyyaml",
+      "pypi_release": "https://pypi.org/project/pyyaml/6.0.3/",
+      "distribution_metadata_sha256": "847a701020334386852b6e07bad1053cb0ce3da9ee1846e7e9d02b24e8bb3f8d",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/pyyaml-6.0.3/licenses/LICENSE",
+          "upstream_distribution_path": "pyyaml-6.0.3.dist-info/licenses/LICENSE",
+          "sha256": "8d3928f9dc4490fd635707cb88eb26bd764102a7282954307d3e5167a577e8a4",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/05/8e/961c0007c59b8dd7729d542c61a4d537767a59645b82a0b521206e1e25c2/pyyaml-6.0.3.tar.gz",
+        "hash": "sha256:d76623373421df22fb4cf8817020cbb7ef15c725b9d5e45f17e189bfc384190f"
+      }
+    },
+    {
+      "name": "sniffio",
+      "version": "1.3.1",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "MIT OR Apache-2.0",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/python-trio/sniffio",
+      "pypi_release": "https://pypi.org/project/sniffio/1.3.1/",
+      "distribution_metadata_sha256": "0b318b57098edeccf585e60a889a6b6a7b5c4086f3a9aa62eff76a1d3cee12d9",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/sniffio-1.3.1/LICENSE",
+          "upstream_distribution_path": "sniffio-1.3.1.dist-info/LICENSE",
+          "sha256": "652c878488d1456361e08c3f8607fd7ba59892a14103d15cce4ff93c85b5cc8b",
+          "matches_distribution_record": true
+        },
+        {
+          "path": "third_party_licenses/sniffio-1.3.1/LICENSE.APACHE2",
+          "upstream_distribution_path": "sniffio-1.3.1.dist-info/LICENSE.APACHE2",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "matches_distribution_record": true
+        },
+        {
+          "path": "third_party_licenses/sniffio-1.3.1/LICENSE.MIT",
+          "upstream_distribution_path": "sniffio-1.3.1.dist-info/LICENSE.MIT",
+          "sha256": "3e6dae555eb92787fc82d1d48355677f454c7f65aeb38d3f9e72bf9a3daf034b",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/a2/87/a6771e1546d97e7e041b6ae58d80074f81b7d5121207425c964ddf5cfdbd/sniffio-1.3.1.tar.gz",
+        "hash": "sha256:f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc"
+      }
+    },
+    {
+      "name": "tqdm",
+      "version": "4.70.0",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "MPL-2.0 AND MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/tqdm/tqdm",
+      "pypi_release": "https://pypi.org/project/tqdm/4.70.0/",
+      "distribution_metadata_sha256": "0d95b85b90428f8776afc4a92b17c5094f78ee98d150b3255acbcdf4e9d57941",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/tqdm-4.70.0/licenses/LICENCE",
+          "upstream_distribution_path": "tqdm-4.70.0.dist-info/licenses/LICENCE",
+          "sha256": "fcff87c3a47ce8028a8512aa182d4fcf0ad1c90544ee75cf9b343684cac194de",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "colorama",
+          "marker": "sys_platform == 'win32'"
+        }
+      ],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/21/3b/6c24bec5be5e743ffd99576daa5cc077722fc7d5bbc00bd133fa0c698dc6/tqdm-4.70.0.tar.gz",
+        "hash": "sha256:55b0b0dbd97462d06ebee91e4dac24ed4d4702be82b24f07e6c1d27e08cea220"
+      }
+    },
+    {
+      "name": "typing-extensions",
+      "version": "4.16.0",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "PSF-2.0",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/python/typing_extensions",
+      "pypi_release": "https://pypi.org/project/typing-extensions/4.16.0/",
+      "distribution_metadata_sha256": "b05084ca1d50879865178d9fff9fabeab61bdfb1f361bfbde95421ffc8f9be46",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/typing-extensions-4.16.0/licenses/LICENSE",
+          "upstream_distribution_path": "typing_extensions-4.16.0.dist-info/licenses/LICENSE",
+          "sha256": "3b2f81fe21d181c499c59a256c8e1968455d6689d269aa85373bfb6af41da3bf",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/f6/cc/6253133b5bb138fc3306cebfbda2c520f545d36b5be2c7255cc528bb45d6/typing_extensions-4.16.0.tar.gz",
+        "hash": "sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"
+      }
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.2",
+      "roles": [
+        "runtime-transitive"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pydantic/typing-inspection",
+      "pypi_release": "https://pypi.org/project/typing-inspection/0.4.2/",
+      "distribution_metadata_sha256": "61096cd0bfe3c7040b6f98c22b02d190fe01936d0ff7616c5134fed02891953a",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/typing-inspection-0.4.2/licenses/LICENSE",
+          "upstream_distribution_path": "typing_inspection-0.4.2.dist-info/licenses/LICENSE",
+          "sha256": "804b59b25f2c31bd278f9202a19ae49a3945aa2664387e2d0a128c7cacc61ec3",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "typing-extensions"
+        }
+      ],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/55/e3/70399cb7dd41c10ac53367ae42139cf4b1ca5f36bb3dc6c9d33acdb43655/typing_inspection-0.4.2.tar.gz",
+        "hash": "sha256:ba561c48a67c5958007083d386c3295464928b01faa735ab8547c5692e87f464"
+      }
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.4",
+      "roles": [
+        "runtime-direct"
+      ],
+      "license_expression": "Apache-2.0",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/python/tzdata",
+      "pypi_release": "https://pypi.org/project/tzdata/2026.4/",
+      "distribution_metadata_sha256": "b022fde14c390c66d53c9cbccf614ebfa7224c453b1b5bec11f2923beaa7c96a",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/tzdata-2026.4/licenses/LICENSE",
+          "upstream_distribution_path": "tzdata-2026.4.dist-info/licenses/LICENSE",
+          "sha256": "df58f69ea88683035d720b5375bcef0cf5aeaa98a1d098d572e0992c378deb46",
+          "matches_distribution_record": true
+        },
+        {
+          "path": "third_party_licenses/tzdata-2026.4/licenses/licenses/LICENSE_APACHE",
+          "upstream_distribution_path": "tzdata-2026.4.dist-info/licenses/licenses/LICENSE_APACHE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "matches_distribution_record": true
+        }
+      ],
+      "dependencies": [],
+      "source_distribution": {
+        "url": "https://files.pythonhosted.org/packages/e4/31/3d74fa778a63b98b7374323befcc0be5ab3bd94afd4096a0124e7379152c/tzdata-2026.4.tar.gz",
+        "hash": "sha256:f1b8bd365d8d210c55353f4d7f8d6d8561c0ba50d704b700d195a9424bba0d79"
+      }
+    }
+  ],
+  "build_tools": [
+    {
+      "name": "setuptools",
+      "version": "84.0.0",
+      "roles": [
+        "build-only"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pypa/setuptools",
+      "pypi_release": "https://pypi.org/project/setuptools/84.0.0/",
+      "distribution_metadata_sha256": "3ef2975718dd31cabdd5829455e9b868ca14dbf79ed8fed2de0af4e87347006e",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/build/setuptools-84.0.0/licenses/LICENSE",
+          "upstream_distribution_path": "setuptools-84.0.0.dist-info/licenses/LICENSE",
+          "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741",
+          "matches_distribution_record": true
+        }
+      ],
+      "declared_constraint": "setuptools>=69",
+      "version_status": "observed local build tool; not pinned by uv.lock"
+    },
+    {
+      "name": "wheel",
+      "version": "0.48.0",
+      "roles": [
+        "build-only"
+      ],
+      "license_expression": "MIT",
+      "license_evidence": "distribution metadata and license text",
+      "project_url": "https://github.com/pypa/wheel",
+      "pypi_release": "https://pypi.org/project/wheel/0.48.0/",
+      "distribution_metadata_sha256": "e702fede719fefbb8accad64c01c78efe8d7efea27a7dcef3423f83ffaadfc48",
+      "notice_files": [
+        {
+          "path": "third_party_licenses/build/wheel-0.48.0/licenses/LICENSE.txt",
+          "upstream_distribution_path": "wheel-0.48.0.dist-info/licenses/LICENSE.txt",
+          "sha256": "30c23618679108f3e8ea1d2a658c7ca417bdfc891c98ef1a89fa4ff0c9828654",
+          "matches_distribution_record": true
+        }
+      ],
+      "declared_constraint": "wheel",
+      "version_status": "observed local build tool; not pinned by uv.lock"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+# Empty starting selection. Add only saved jobs that you intend to process.
+job_ids: []
+urls: []
+reference_ids: []

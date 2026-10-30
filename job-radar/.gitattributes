@@ -1,0 +1,10 @@
+* text=auto
+*.py text eol=lf
+*.md text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.cmd text eol=crlf
+LICENSE text eol=lf
+# Preserve byte-for-byte upstream notices and their recorded hashes.
+third_party_licenses/** -text

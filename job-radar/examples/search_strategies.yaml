@@ -1,0 +1,24 @@
+# FICTIONAL search examples for the optional experimental CLI search workflow.
+# Edit the queries and regions before a live search; searches may use paid APIs.
+strategies:
+  - slug: laboratory-coordination
+    name: Laboratory coordination example
+    focus: Roles coordinating laboratory schedules and sample records.
+    queries:
+      - laboratory coordinator environmental monitoring
+    regions:
+      - Replace with your preferred region
+  - slug: environmental-research
+    name: Environmental research example
+    focus: Roles using verified laboratory and data-analysis experience.
+    queries:
+      - environmental research associate water monitoring
+    regions:
+      - Replace with your preferred region
+  - slug: scientific-support
+    name: Scientific support example
+    focus: Roles explaining laboratory methods to scientific users.
+    queries:
+      - scientific support laboratory analysis
+    regions:
+      - Replace with your preferred region
