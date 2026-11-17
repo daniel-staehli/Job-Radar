@@ -20,6 +20,7 @@ import yaml
 
 from .models import StrictModel
 from .providers import normalize_settings, provider_identity, resolve_response_fn
+from .cancellation import check_cancelled
 
 
 MAX_BYTES = 2 * 1024 * 1024
@@ -273,12 +274,13 @@ def assess_job(root: Path, job: dict, provider_settings: dict) -> dict:
         "job_snapshot": vacancy, "profile_evidence": evidence,
         "assessment": assessment.model_dump(mode="json"),
     }
+    check_cancelled()
     _write(path, package)
     # A profile can be edited in another window while the model is working.
     return latest_assessment(root, job) or {**package, "path": str(path), "stale": True}
 
 
-def latest_assessment(root: Path, job: dict) -> dict | None:
+def latest_assessment(root: Path, job: dict, *, profile_hash: str | None = None) -> dict | None:
     """Read the latest review without fetching, writing or invoking a provider."""
     path = _store_path(root, job)
     if not path.exists():
@@ -300,7 +302,8 @@ def latest_assessment(root: Path, job: dict) -> dict | None:
     except (UnicodeError, json.JSONDecodeError, KeyError, TypeError, ValueError, RecursionError):
         raise ValueError("The saved job-match review could not be read; it has not been replaced.") from None
     try:
-        current = {"profile": _hash(_profile_snapshot(root)), "job": _hash(_job_snapshot(job))}
+        current = {"profile": profile_hash if profile_hash is not None else _hash(_profile_snapshot(root)),
+                   "job": _hash(_job_snapshot(job))}
         stale = current != package["input_hashes"]
     except ValueError:
         stale = True

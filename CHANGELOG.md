@@ -1,5 +1,13 @@
 # Change history
 
+## 0.9.0 — 17 November 2026 (beta)
+
+- Export completed applications to editable Word documents, with separate CV and letter layouts, supported custom templates and no AI request.
+- Review selected employer-feed vacancies against the saved profile using local Ollama models; cache evidence-based assessments, sort matches and stop a running batch.
+- Preserve the public release's fictional example data, privacy guards, generic templates and tests.
+- No new dependencies. This remains an experimental source release; Word visual layout, live Ollama reviews and installation on another Windows/macOS machine need manual verification.
+
+
 This file describes the public source package. It is not a record of private application data or a claim that a GitHub release has already been published.
 
 ## Unreleased

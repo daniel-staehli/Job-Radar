@@ -168,3 +168,41 @@ Job Radar does not encrypt local files. Cloud sync or backup software on your co
 - **No PDF:** source output is the default. Check local `latexmk` setup and compilation logs.
 
 Automated tests use synthetic records and mocked providers. They validate workflows, not writing quality or language. Review [known limitations](docs/KNOWN_ISSUES.md) and [release validation](docs/RELEASE_VALIDATION.md) for the tested scope and pending checks.
+
+
+## Export editable Word documents
+
+1. Open **Review & improve** and choose a completed saved application.
+2. Click **Export to Word…**. Choose **Clean** (Arial) or **Classic** (Georgia) separately for the CV and cover letter. You can export either document or both.
+3. Check the editable letter date; leave it blank to omit it.
+4. Click **Export Word files**, then **Open Word files** to check formatting in Word or another DOCX-compatible editor.
+
+Export is entirely local and makes no AI request. Each export gets unique filenames beside the selected application's existing files. Existing Word files, LaTeX documents and PDFs are never overwritten. Word edits do not sync back to Job Radar: exporting again uses the saved application content, not a previously exported Word file.
+
+The Word layouts use the saved profile and selected facts for that application, including edits saved through **Edit text / notes**. They do not convert LaTeX formatting, photographs or text hard-coded into a LaTeX template. External edits to the selected `.tex` file block export when they no longer match the saved content, to avoid silently exporting older wording. Incomplete or failed generations cannot be exported.
+
+### Create your own Word layout
+
+Choose a built-in layout and click **Save starter template…**. Open it in Word and adjust its fonts, margins, spacing or tables. Keep each placeholder in its own paragraph, exactly once. For CV section formatting, modify the Word styles **JRSection**, **JRRole**, **JRBullet** and **Normal**. For the letter, format the **LETTER_CONTENT** placeholder paragraph or its **JRLetter** style.
+
+Import the saved `.docx` using **Import template…** under the matching document type. The template is copied into `data/word_templates`, separately from writing references. Its name appears in the layout picker. All ordinary text left in the template will also appear in the export, so remove sample personal information and use the supplied placeholders instead.
+
+This first version supports text, tables, styles and page settings. It rejects images, headers/footers, embedded files, external links, Word fields, hidden text and tracked changes. It removes document metadata when importing and exporting. Arbitrary PDF layouts and automatic recreation of an existing CV's design are not supported. References in the Reference library continue to guide writing; they are not Word layout templates.
+
+
+### Review Find jobs results with Ollama
+
+1. In **AI settings**, choose **Ollama (local)**, select your installed model and save. Use a local address such as `http://localhost:11434/api`. This feature does not switch your provider automatically.
+2. Open **Find jobs**, refresh your saved employer boards and optionally filter the results.
+3. Click **Review with Ollama…**. Select one to ten vacancies with Ctrl-click, then **Review selected vacancies**.
+4. The **AI match** column shows Strong, Plausible, Stretch, Poor or Insufficient evidence. **Sort by AI match** puts stronger documented matches first; this is not a hiring probability.
+5. Select a vacancy and choose **View saved match** for the explanation, quoted requirements, profile evidence and gaps.
+
+The model reviews already fetched vacancy text against your saved profile. It does not search the wider web, submit applications, change your profile or save vacancies into Jobs. Use **Save selected job to tracker** for vacancies you want to pursue. Fetching employer feeds and keyword ranking still use no AI.
+
+Reviews are sent to your configured local Ollama server, not OpenAI. Known cloud-model names and non-local server addresses are rejected for this action; choose a model you run locally. Dedicated name, email, telephone and photograph fields are excluded from the match request. Personal information written into your summary or experience text remains part of that text. The relevant profile evidence and reviews are private local files in `data/job_assessments`.
+
+One request is made per selected vacancy that needs review. Current reviews with matching input, model and settings are reused by default. Untick reuse to request a fresh assessment. A changed profile or vacancy makes an earlier review **Outdated**; outdated reviews are not ranked as current matches. Failed or incomplete employer refreshes must be resolved before reviewing stale vacancies.
+
+**Stop review** cancels the current request and stops the batch; completed reviews remain saved. A provider or validation error stops further requests without an automatic retry. The error is shown in the dialog. Reviews may take several minutes per vacancy depending on your model and computer.
+

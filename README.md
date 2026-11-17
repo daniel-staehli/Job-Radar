@@ -17,15 +17,16 @@ Job Radar follows one principle: **people make the judgment calls, Python handle
 - Import a vacancy URL, pasted text or a text-based file, review the extracted details and save it locally. AI extraction is optional.
 - Track application status, dates, interviews, document versions, contacts and next actions, with automatic saving of job-field edits.
 - Check selected employers' public Ashby and Greenhouse boards; review results before adding them to the tracker.
-- Rank cached vacancies by your priority terms, with visible matching explanations.
+- Rank cached vacancies by your priority terms, or review selected vacancies with a local Ollama model against your saved profile.
 - Keep reference CVs and cover letters, plus papers, company articles and notes for individual jobs.
 - Edit your verified profile, review AI-suggested additions from a CV, and request a job-match assessment when useful.
 - Generate a CV and cover letter together from a verified fact bank; revise either with written feedback.
 - Abort a running document generation; incomplete attempts are kept separate from completed drafts.
 - Edit saved document text directly and keep private annotations, without AI.
+- Export completed drafts as editable Word documents using built-in layouts or a supported Word template, without another AI request.
 - Choose Codex, local Ollama with model-specific thinking controls, OpenAI, an OpenAI-compatible endpoint, Anthropic or Gemini for explicit writing requests.
 
-Documents use LaTeX templates. The desktop interface is built with Tkinter; the same local records are also available through a command-line interface.
+PDF documents use LaTeX templates; Word export uses separate Word layouts. The desktop interface is built with Tkinter; the same local records are also available through a command-line interface.
 
 ## Setup on Windows
 
@@ -70,7 +71,7 @@ AI is optional for tracking, importing, ranking and manual editing. Codex uses a
 
 The API providers require a valid model identifier and usually an API key supplied through an environment variable. Enter the **variable name**, never its secret value, in Job Radar. Codex sign-in and API access have different account and billing arrangements; do not assume a subscription includes API credits. Requests use the selected service's allowance or billing. See [integrations](docs/INTEGRATIONS.md) for configuration and interface references.
 
-The default output is `cv.tex` and `motivation_letter.tex`. PDF compilation is optional and needs a separate local LaTeX installation with `latexmk`. The text editor is not a page-layout preview. Always inspect the compiled PDF before using it.
+The default output is `cv.tex` and `motivation_letter.tex`. To export Word files, select a completed application under **Review & improve → Export to Word…**. Word export does not require Microsoft Word or LaTeX, but its formatting must be checked in your document editor. Custom templates use the supported placeholders; arbitrary reference documents are not copied exactly. PDF compilation is optional and needs a separate local LaTeX installation with `latexmk`. The text editor is not a page-layout preview. Always inspect the compiled PDF before using it.
 
 The supplied `.env.example` documents optional settings; Job Radar does not load `.env` files automatically. Set needed values in your process or user environment and restart the program. The default date timezone is `Europe/Zurich`; set `JOB_RADAR_TIMEZONE` to your IANA timezone if needed.
 

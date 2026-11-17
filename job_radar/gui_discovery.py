@@ -5,12 +5,16 @@ from tkinter.scrolledtext import ScrolledText
 from urllib.parse import urlsplit
 from .discovery import suggested_presets
 from .ranking import load_terms, parse_terms, save_terms, term_breakdown
+from . import discovery_match
+from .gui_discovery_match import DiscoveryMatchView
 
 
-class DiscoveryView:
+class DiscoveryView(DiscoveryMatchView):
     def _build_discovery(self):
         self.presets, self.candidates = [], []
         self.priority_groups = []
+        self.candidate_reviews = {}
+        self.discovery_ai_sort = tk.BooleanVar(value=False)
         ttk.Label(self.find_tab, text="Find roles at employers you choose", style="Heading.TLabel").pack(anchor='w')
         ttk.Label(self.find_tab, text="Follow selected employers on Ashby or Greenhouse. Add employers first, then refresh their vacancy lists. Other websites: use Add a job.",
                   style="Muted.TLabel", wraplength=1000).pack(anchor='w', pady=(4, 10))
@@ -35,13 +39,19 @@ class DiscoveryView:
         self.priority_terms = tk.StringVar(value='')
         ttk.Entry(priority, textvariable=self.priority_terms).pack(side='left', fill='x', expand=True, padx=(0, 8))
         self._button(priority, 'Rank by terms (local)', self.rank_candidates)
+        ai_controls = ttk.Frame(self.find_tab)
+        ai_controls.pack(fill='x', pady=(0, 8))
+        self._button(ai_controls, 'Review with Ollama…', self.open_discovery_review)
+        self._button(ai_controls, 'View saved match', self.show_candidate_match)
+        ttk.Checkbutton(ai_controls, text='Sort by AI match', variable=self.discovery_ai_sort,
+                        command=self._fill_candidates).pack(side='left', padx=(8, 0))
         panels = ttk.Panedwindow(self.find_tab, orient='horizontal')
         panels.pack(fill='both', expand=True)
         listing, details = ttk.Frame(panels), ttk.Frame(panels, padding=(12, 0, 0, 0))
         panels.add(listing, weight=3)
         panels.add(details, weight=2)
-        self.candidate_tree = ttk.Treeview(listing, columns=('company', 'title', 'location', 'terms'), show='headings', selectmode='browse')
-        for key, label, width in [('company', 'Employer', 110), ('title', 'Position', 220), ('location', 'Location', 125), ('terms', 'Terms', 70)]:
+        self.candidate_tree = ttk.Treeview(listing, columns=('company', 'title', 'location', 'terms', 'match'), show='headings', selectmode='browse')
+        for key, label, width in [('company', 'Employer', 100), ('title', 'Position', 190), ('location', 'Location', 100), ('terms', 'Terms', 60), ('match', 'AI match', 110)]:
             self.candidate_tree.heading(key, text=label)
             self.candidate_tree.column(key, width=width, minwidth=70)
         scroll = ttk.Scrollbar(listing, orient='vertical', command=self.candidate_tree.yview)
@@ -62,6 +72,12 @@ class DiscoveryView:
         ttk.Label(self.find_tab, text='Priority example: microscopy; R | Python; Lausanne. Each group counts once. Matches show words mentioned in the vacancy, not a prediction of your suitability.',
                   style='Muted.TLabel', wraplength=1000).pack(side='bottom', anchor='w', pady=(8, 0), before=actions)
         self._load_discovery()
+        self.tabs.bind('<<NotebookTabChanged>>', self._discovery_tab_selected, add='+')
+
+    def _discovery_tab_selected(self, _event=None):
+        # Recheck cached reviews when returning after an edit in My profile.
+        if self.tabs.select() == str(self.find_tab):
+            self._fill_candidates()
 
     def _load_discovery(self):
         # Reading cached settings/results never contacts an employer.
@@ -87,12 +103,15 @@ class DiscoveryView:
             self._error(exc)
 
     def _fill_candidates(self):
+        self.candidate_reviews = discovery_match.saved_reviews(self.service.root, self.candidates)
         selected = self.candidate_tree.selection()
         query = self.discovery_query.get().strip().casefold()
         employer_index = self.employer_choice.current()
         preset_id = self.presets[employer_index - 1]['id'] if 0 < employer_index <= len(self.presets) else None
         self.candidate_tree.delete(*self.candidate_tree.get_children())
         ordered = sorted(self.candidates, key=lambda item: -term_breakdown(item, self.priority_groups)['count']) if self.priority_groups else self.candidates
+        if self.discovery_ai_sort.get():
+            ordered = sorted(ordered, key=lambda item: discovery_match.rank(self.candidate_reviews.get(item['id'])))
         for item in ordered:
             if preset_id and item.get('preset_id') != preset_id:
                 continue
@@ -101,7 +120,8 @@ class DiscoveryView:
             tag = 'alternate' if len(self.candidate_tree.get_children()) % 2 else ''
             breakdown = term_breakdown(item, self.priority_groups)
             terms = f"{breakdown['count']}/{breakdown['total']}" if breakdown['total'] else ''
-            self.candidate_tree.insert('', 'end', iid=item['id'], values=(item['company'], item['title'], item['location'], terms), tags=(tag,))
+            match = discovery_match.label(self.candidate_reviews.get(item['id']))
+            self.candidate_tree.insert('', 'end', iid=item['id'], values=(item['company'], item['title'], item['location'], terms, match), tags=(tag,))
         if self.candidate_tree.get_children():
             self.discovery_empty.place_forget()
         else:
@@ -127,13 +147,22 @@ class DiscoveryView:
             missing = '\nMissing details: ' + ', '.join(item['missing_fields']) + '. Use Review in manual form.\n' if item.get('missing_fields') else ''
             breakdown = term_breakdown(item, self.priority_groups)
             priority = ''
+            review = self.candidate_reviews.get(item['id'])
+            match = ''
+            if review:
+                match = '\nAI match: ' + discovery_match.label(review) + '\n'
+                if review.get('assessment'):
+                    match += review['assessment']['summary'] + '\n'
+                    match += 'Model: ' + str(review.get('provider', {}).get('model', '')) + '\nUse View saved match for evidence and gaps.\n'
+                if review.get('error'):
+                    match += review['error'] + '\n'
             if breakdown['total']:
                 matched = '; '.join(group['group'] for group in breakdown['matched']) or 'None'
                 absent = '; '.join(breakdown['missing']) or 'None'
                 priority = f"\nPriority groups mentioned: {breakdown['count']}/{breakdown['total']}\nMatched: {matched}\nNot mentioned: {absent}\n"
             text = (f"{item['title']}\n{item['company']} · {item['location']}\n\n"
                     f"Source: {item['provider']}\n{item['source_url']}\n"
-                    f"Fetched: {item.get('fetched_at', '')}\n{notice}{missing}{priority}\n{item.get('description', '')}")
+                    f"Fetched: {item.get('fetched_at', '')}\n{notice}{missing}{priority}{match}\n{item.get('description', '')}")
         except (ValueError, StopIteration):
             text = ('Select a vacancy to read its full description.\n\nNothing is added to your tracker until you choose Save selected job.'
                     if self.candidates else 'Your employer vacancies will appear here.\n\n1. Add a board in Manage employers.\n2. Refresh vacancies.\n3. Review and save the roles you want.')

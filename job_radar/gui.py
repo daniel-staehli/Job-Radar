@@ -19,6 +19,7 @@ from .gui_discovery import DiscoveryView
 from .gui_ai import AiSettingsView
 from .gui_job_context import JobContextView
 from .gui_manual_edit import ManualEditView
+from .gui_word_export import WordExportView
 from .gui_profile import ProfileView
 from .gui_match import MatchView
 from .gui_import import ImportView
@@ -30,7 +31,7 @@ from .generation_state import finish_outputs, mark_incomplete
 from .tracking import STATUSES
 
 
-class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView, ProfileView, MatchView, ImportView):
+class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView, ProfileView, MatchView, ImportView, WordExportView):
     def __init__(self, window: tk.Tk, service: GuiService | None = None):
         self.window = window
         self.service = service or GuiService()
@@ -407,6 +408,7 @@ class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView,
         self._button(actions, "Improve selected document", self.improve_document, primary=True)
         self._button(actions, "Compare previous version", self.compare_revision)
         self._button(actions, "Open version folder", self.open_draft_folder)
+        self._button(actions, "Export to Word…", self.open_word_export)
         self.revision_result = tk.StringVar(value="Reading drafts stays local. Improve sends your feedback and the saved application context to Codex.")
         ttk.Label(editing, textvariable=self.revision_result, wraplength=1000, style="Muted.TLabel").pack(anchor="w")
         self.ai_revision_disclosure = tk.StringVar()

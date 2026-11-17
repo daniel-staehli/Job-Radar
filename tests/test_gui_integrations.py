@@ -224,7 +224,7 @@ def test_local_priority_ranking_counts_alternatives_once_and_keeps_tracker_empty
     app.priority_terms.set('microscopy | protein; R | Python')
     app.rank_candidates()
     assert app.candidate_tree.get_children() == (first['id'], second['id'])
-    assert app.candidate_tree.item(first['id'], 'values')[-1] == '2/2'
+    assert app.candidate_tree.set(first['id'], 'terms') == '2/2'
     app.candidate_tree.selection_set(first['id'])
     app._show_candidate()
     text = app.candidate_viewer.get('1.0', 'end-1c')
@@ -257,3 +257,38 @@ def test_status_filters_and_metrics_exclude_finished_followups(app, monkeypatch)
     app.status_filter.set("All statuses")
     assert len(app.job_tree.get_children()) == 7
     assert not app.test_errors
+
+
+def test_ollama_matches_sort_cached_vacancies_and_explain_results_without_tracking(app, monkeypatch):
+    from job_radar import discovery_match, job_match
+    from test_discovery_match import assessment
+    first, second = candidate(app, 701), candidate(app, 702)
+    (app.service.root / 'data/master_profile.yaml').write_text(
+        yaml.safe_dump({'skills': [{'text': 'Research coordination'}]}), encoding='utf-8')
+    model_calls = []
+    def resolver(settings):
+        def respond(**kwargs):
+            model_calls.append(kwargs)
+            result = assessment(category='strong' if len(model_calls) == 2 else 'stretch')
+            result.requirements[0].job_quote = 'Coordinate research experiments'
+            return result, {}
+        return respond
+    monkeypatch.setattr(job_match, 'resolve_response_fn', resolver)
+    settings = {**providers.default_settings('ollama'), 'model': 'test-local'}
+    result = discovery_match.review_candidates(app.service.root, [first, second], settings)
+    assert not result['errors']
+    app.candidates = [first, second]
+    app.discovery_ai_sort.set(True)
+    app._fill_candidates()
+    assert app.candidate_tree.get_children() == (second['id'], first['id'])
+    assert app.candidate_tree.set(second['id'], 'match') == 'Strong'
+    app.candidate_tree.selection_set(second['id'])
+    app._show_candidate()
+    assert 'test-local' in app.candidate_viewer.get('1.0', 'end-1c')
+    displayed = []
+    monkeypatch.setattr(app, '_show_text', lambda title, text: displayed.append(text))
+    app.show_candidate_match()
+    assert 'Requirements and gaps' in displayed[0]
+    assert len(model_calls) == 2
+    assert not app.service.db_path.exists()
+

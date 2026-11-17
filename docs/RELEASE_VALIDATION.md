@@ -1,8 +1,16 @@
 # Release validation
 
-Source candidate: **0.8.0**, checked **29 October 2026**. This records local checks, not a claim that a GitHub release or CI run has already completed.
+Source candidate: **0.9.0 beta**, checked **17 November 2026**. This records local checks, not a claim that a GitHub release or CI run has already completed.
 
-## Completed
+## Current candidate
+
+- Prepared from the previously sanitized public source, with Word export and local Ollama discovery reviews merged from the working application. Personal configuration, reference documents, databases, generated applications and credentials are excluded.
+- Automated allowlist and credential-pattern scan: 180 source files checked. Targeted private-contact, personal-path and career-fact scans found no matches. The two existing commits use GitHub noreply identities; 173 distinct historical blobs passed the same checks. Scanning cannot guarantee the absence of all private information.
+- Windows/Python 3.12 regression checks: **1,153 passed, 2 skipped** across the full run and targeted rerun. The full run identified one stale table-column test assertion; the new AI-match column moved the old positional lookup. The test now addresses the Terms column by name, and all seven discovery integration checks pass, including the newly added Ollama sorting check. The two skips require Windows symlink privileges. A short temporary test directory avoids the host's unusually long default path.
+- No paid AI calls or live Ollama requests were made by this release check. Word files have structural tests; their visual appearance still needs review in Word or another document editor.
+
+## Previous 0.8.0 baseline checks (29 October)
+
 
 - **Public source regression suite:** 1,121 passed, 2 skipped, 0 failures/errors on Windows with Python 3.12. The two skipped checks require permission to create directory symlinks. GUI, storage, import, schema, cancellation, history and provider request behavior were tested with synthetic inputs and mocked model responses.
 - **Fresh installation:** created a separate source folder and new virtual environment, installed the locked dependencies with `uv sync --offline --frozen --all-extras`, initialized the fictional workspace and opened command-line help successfully. Dependencies came from the local cache; this was not a GitHub download test. The restricted test environment required its temporary build directory inside the writable workspace.

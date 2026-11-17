@@ -537,6 +537,39 @@ class GuiService:
                 "Fixed template text (such as Additional information) and page layout "
                 "are visible in the generated document.")
 
+    def word_layouts(self, document: str) -> list[tuple[str, str]]:
+        from .word_export import layouts
+        _document_name(document)
+        return layouts(self.root / "data" / "word_templates", document)
+
+    def import_word_layout(self, source: Path, document: str) -> str:
+        from .word_export import import_template
+        _document_name(document)
+        return import_template(source, self.root / "data" / "word_templates", document)
+
+    def export_word(self, directory: Path, selections: dict[str, str], date_line: str = "") -> list[Path]:
+        """Export saved structured wording locally, without changing source files."""
+        from .cv import materialize_cv_context
+        from .word_export import export_documents
+        directory = self._draft_directory(directory)
+        tailoring = self._saved_tailoring(directory)
+        for document in selections:
+            _document_name(document)
+            self._verify_saved_wording(directory, document)
+        saved = _saved_context(directory)
+        profile = dict(saved["profile"])
+        if "cv" in selections and "interests" not in profile:
+            raise ValueError("This older CV snapshot is incomplete. Save the CV through Edit text / notes before exporting it to Word.")
+        # The letter needs only contact details and headline, not the CV selections.
+        context = {"contact": profile["contact"], "headline": " | ".join(tailoring.headline_tags)}
+        if "cv" in selections:
+            try:
+                context = materialize_cv_context(tailoring, profile)
+            except (KeyError, TypeError) as exc:
+                raise ValueError("The saved profile cannot reconstruct this CV for Word export.") from exc
+        return export_documents(directory, self.root / "data" / "word_templates", selections,
+                                context, tailoring.motivation_letter, saved["job"].get("company", ""), date_line)
+
     @staticmethod
     def _verify_saved_wording(directory: Path, document: str) -> None:
         """Do not present the structured snapshot as a later manually edited file."""
