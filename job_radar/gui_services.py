@@ -537,6 +537,26 @@ class GuiService:
                 "Fixed template text (such as Additional information) and page layout "
                 "are visible in the generated document.")
 
+    def check_exported_cv(self, directory: Path, export: Path) -> str:
+        from .cv import materialize_cv_context
+        from .cv_readability import review_export
+        from .job_context import extract_local_text
+
+        directory = self._draft_directory(directory)
+        export = Path(export)
+        if export.suffix.lower() not in {".pdf", ".docx"}:
+            raise ValueError("Choose the exported CV as a PDF or Word (.docx) file.")
+        text = extract_local_text(export)["text"]
+        try:
+            tailoring = self._saved_tailoring(directory)
+            profile = dict(_saved_context(directory)["profile"])
+            profile.setdefault("interests", [])  # Not checked; omitted in older snapshots.
+            context = materialize_cv_context(tailoring, profile)
+        except (KeyError, ValueError, TypeError, OSError):
+            return ("The saved CV details are unavailable for comparison. Review the extracted "
+                    "text in order.\n\nExtracted text\n\n" + text)
+        return review_export(text, context)
+
     def word_layouts(self, document: str) -> list[tuple[str, str]]:
         from .word_export import layouts
         _document_name(document)

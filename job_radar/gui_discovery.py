@@ -15,8 +15,8 @@ class DiscoveryView(DiscoveryMatchView):
         self.priority_groups = []
         self.candidate_reviews = {}
         self.discovery_ai_sort = tk.BooleanVar(value=False)
-        ttk.Label(self.find_tab, text="Find roles at employers you choose", style="Heading.TLabel").pack(anchor='w')
-        ttk.Label(self.find_tab, text="Follow selected employers on Ashby or Greenhouse. Add employers first, then refresh their vacancy lists. Other websites: use Add a job.",
+        ttk.Label(self.find_tab, text="Find vacancies", style="Heading.TLabel").pack(anchor='w')
+        ttk.Label(self.find_tab, text="Search online by role and location, or refresh the Ashby and Greenhouse boards you follow.",
                   style="Muted.TLabel", wraplength=1000).pack(anchor='w', pady=(4, 10))
         controls = ttk.Frame(self.find_tab)
         controls.pack(fill='x')
@@ -25,6 +25,7 @@ class DiscoveryView(DiscoveryMatchView):
         self.employer_choice.bind('<<ComboboxSelected>>', lambda _: self._fill_candidates())
         self._button(controls, 'Refresh vacancies', self.refresh_discovery, primary=True)
         self._button(controls, 'Manage employers', self.manage_employers)
+        self._button(controls, 'Search by role online…', self.search_web_jobs)
         self.discovery_status = tk.StringVar(value='Add an employer using Manage employers. Ashby and Greenhouse boards are supported.')
         ttk.Label(self.find_tab, textvariable=self.discovery_status, style='Muted.TLabel', wraplength=1000).pack(anchor='w', pady=(10, 6))
         filters = ttk.Frame(self.find_tab)
@@ -221,6 +222,67 @@ class DiscoveryView(DiscoveryMatchView):
             self.tabs.select(self.import_tab)
         except (ValueError, StopIteration) as exc:
             self._error(exc)
+
+    def search_web_jobs(self):
+        from tkinter import messagebox
+        from .web_job_search import find_links
+
+        window = tk.Toplevel(self.window)
+        window.title("Search jobs across employers")
+        window.transient(self.window)
+        window.grab_set()
+        frame = ttk.Frame(window, padding=16)
+        frame.pack(fill="both", expand=True)
+        role = self._field(frame, "Role or keywords", 0)
+        location = self._field(frame, "Location (optional)", 1)
+        ttk.Label(frame, text="Brave Search receives your keywords and location. Each search uses one request on your Brave API plan.",
+                  wraplength=600).grid(row=2, columnspan=2, sticky="w", pady=8)
+        results = ttk.Treeview(frame, columns=("title", "url"), show="headings", selectmode="browse", height=9)
+        results.heading("title", text="Search result")
+        results.heading("url", text="Source link")
+        results.column("title", width=320)
+        results.column("url", width=320)
+        results.grid(row=4, columnspan=2, sticky="nsew")
+        frame.columnconfigure(1, weight=1)
+        frame.rowconfigure(4, weight=1)
+        note = tk.StringVar(value="Search by role across employers, then select a link to fetch the actual posting.")
+        ttk.Label(frame, textvariable=note, wraplength=620).grid(row=5, columnspan=2, sticky="w", pady=6)
+
+        def search():
+            keywords, place = role.get(), location.get()
+            if self.busy:
+                return
+            results.delete(*results.get_children())
+            note.set("Searching…")
+            def found(rows):
+                if window.winfo_exists():
+                    for title, url in rows:
+                        results.insert("", "end", values=(title, url))
+                    note.set(f"{len(rows)} links found. Check the posting for availability.")
+            def failed(error):
+                if window.winfo_exists():
+                    note.set(str(error))
+            self._run("Searching across employers…", lambda: find_links(keywords, place), found, failed)
+
+        def fetch():
+            selection = results.selection()
+            if not selection:
+                return note.set("Choose a search result first.")
+            if self._import_worker is not None:
+                return note.set("Wait for the current import to finish.")
+            if (self.import_url.get() or any(v.get() for v in self.job_fields.values())
+                    or self.description.get("1.0", "end-1c").strip()):
+                if not messagebox.askyesno("Replace import form?", "Replace the current Add a job form with this posting?", parent=window):
+                    return
+            url = results.set(selection[0], "url")
+            window.destroy()
+            self.clear_import()
+            self.tabs.select(self.import_tab)
+            self.import_url.set(url)
+            self.fetch_job()
+
+        ttk.Button(frame, text="Search with Brave", command=search).grid(row=3, column=0, sticky="w", pady=6)
+        ttk.Button(frame, text="Fetch selected posting", command=fetch).grid(row=6, column=0, sticky="w")
 
     def manage_employers(self):
         window = tk.Toplevel(self.window)

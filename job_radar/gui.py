@@ -388,6 +388,7 @@ class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView,
         ttk.Radiobutton(scope, text="Cover letter", variable=self.review_document, value="cover_letter", command=self.show_draft).pack(side="left", padx=(0, 16))
         ttk.Radiobutton(scope, text="CV", variable=self.review_document, value="cv", command=self.show_draft).pack(side="left", padx=(0, 20))
         ttk.Label(scope, text="Text view · open the document to check its layout", style="Muted.TLabel").pack(side="left")
+        self._button(scope, "Check exported CV…", self.check_exported_cv)
         self.draft_viewer = ScrolledText(self.review_tab, height=9, wrap="word", font=("Segoe UI", 11), padx=16, pady=12, spacing3=5)
         self.draft_viewer.pack(fill="both", expand=True)
         self.draft_viewer.configure(state="disabled")
@@ -413,6 +414,22 @@ class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView,
         ttk.Label(editing, textvariable=self.revision_result, wraplength=1000, style="Muted.TLabel").pack(anchor="w")
         self.ai_revision_disclosure = tk.StringVar()
         ttk.Label(editing, textvariable=self.ai_revision_disclosure, wraplength=1000, style='Muted.TLabel').pack(anchor='w', pady=(5, 0))
+
+    def check_exported_cv(self):
+        try:
+            draft = self._chosen_draft()
+        except ValueError as exc:
+            return self._error(exc)
+        selected = filedialog.askopenfilename(
+            parent=self.window, title="Choose the exported CV to check",
+            initialdir=draft["directory"], filetypes=[("CV documents", "*.pdf *.docx")],
+        )
+        if selected:
+            path = Path(selected)
+            self._run("Reading the exported CV locally…",
+                      lambda: self.service.check_exported_cv(draft["directory"], path),
+                      lambda report: self._show_text("CV readability · " + path.name,
+                          f"File: {path.name}\nSaved application: {draft['label']}\n\n{report}"))
 
     def _chosen_draft(self):
         index = self.draft_choice.current()

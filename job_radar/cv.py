@@ -141,7 +141,16 @@ relevant. Give a frank gap list and interview angles. Write the matching motivat
 letter in the same response. Do not hide a hard eligibility gap behind generic
 enthusiasm. Do not invent a named recipient: if the job text names more than one
 contact with different functions, choose the recruiting contact only when clearly
-identified; otherwise use a generic salutation."""
+identified; otherwise use a generic salutation.
+
+Use the vacancy's requested application language for the letter when specified
+and supported (English, French or German). Otherwise follow the main language
+of the posting. Ignore the language of reference letters and the candidate's
+native language when making this choice. Match the salutation, subject, body,
+closing and language field. Start with a specific reason for choosing this role.
+For each achievement, describe the documented action. Claim a result such as
+improved consistency, saved time or increased adoption only if the verified
+facts explicitly document that result. Apply this rule to the CV summary too."""
 
 
 def _indexed(items: list[dict]) -> dict[str, dict]:

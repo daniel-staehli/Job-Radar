@@ -1,5 +1,7 @@
 # Job Radar desktop guide
 
+**Search beyond saved employers.** Set the environment variable `BRAVE_SEARCH_API_KEY` on your computer and restart Job Radar. In **Find jobs → Search by role online…**, enter a role and optional location, then click **Search with Brave**. Each search requests up to ten web links, including possible generic or expired pages. Choose a result and click **Fetch selected posting** to review the employer’s page in **Add a job**. Save the reviewed job, select it in **Create documents**, and use **Ollama (local)** in AI settings to generate both drafts on your computer. Only your search terms and location are sent to Brave. Search API usage is billed under your Brave plan.
+
 Complete [setup](README.md#setup-on-windows), then double-click **Open Job Radar.cmd**. The seven tabs share the same local database and application folders as the terminal commands. No model connection is needed to browse records or track progress.
 
 ## My profile and job-match reviews
@@ -169,6 +171,12 @@ Job Radar does not encrypt local files. Cloud sync or backup software on your co
 
 Automated tests use synthetic records and mocked providers. They validate workflows, not writing quality or language. Review [known limitations](docs/KNOWN_ISSUES.md) and [release validation](docs/RELEASE_VALIDATION.md) for the tested scope and pending checks.
 
+
+## Check an exported CV
+
+In **Review & improve**, select the saved application, click **Check exported CV…** and choose its PDF or Word (.docx) file. The picker opens in the application folder. If there is only a LaTeX file, compile the PDF or use **Export to Word…** first.
+
+The check reads the file on your computer and compares its text with that saved version’s name, contact details, experience and education entries and dates. Read the extracted text in order, especially after changing layouts. Image-only PDF pages need a text export or OCR. This check uses no AI or external ATS service.
 
 ## Export editable Word documents
 
