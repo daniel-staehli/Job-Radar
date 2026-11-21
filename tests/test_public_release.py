@@ -76,6 +76,14 @@ def test_scanner_omits_detected_secret_value():
     assert not release.check_content('.env.example', b'OPENAI_API_KEY=\n')
 
 
+def test_release_rejects_private_contacts_even_when_export_renamed():
+    assert release.check_content('docs/Connections.csv', b'')
+    assert release.check_content('data/network.sqlite3', b'')
+    sample = b'Notes:\r\n\r\n"First Name","Last Name",URL,Company,Position\r\n'
+    assert release.check_content('examples/team.csv', sample)
+    assert not release.check_content('examples/jobs.csv', b'Company,Position\n')
+
+
 def test_original_build_notices_are_not_excluded_as_generated_build_output():
     files = release.working_files(ROOT)
     inventory = json.loads((ROOT / 'docs' / 'dependency-inventory.json').read_text(encoding='utf-8'))

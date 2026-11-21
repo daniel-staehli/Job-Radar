@@ -65,6 +65,19 @@ Read the [desktop guide](GUI_GUIDE.md) for all controls or [prepare one applicat
 
 In **Jobs**, status changes save immediately; text fields, dates and notes save after a brief pause. **Save progress** saves immediately. Invalid dates or failed saves leave the edits visible with an unsaved notice and prevent navigation or closing from discarding them. Correct the problem and retry; dates use `YYYY-MM-DD`. To load an update while an older window is open, click **Save progress** there before closing it and reopening **Open Job Radar.cmd**.
 
+## Setup on macOS
+
+Download the source ZIP, extract it, and open Terminal in the folder containing `pyproject.toml`. With Python 3.11 or 3.12 and Tk installed, run:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -e ".[dev]"
+.venv/bin/python scripts/initialize_workspace.py
+.venv/bin/python job_radar_gui.py
+```
+
+If you use uv, `uv sync --frozen --all-extras` replaces the first two commands. The initializer creates a fictional example profile for first use.
+
 ## AI and PDF setup
 
 AI is optional for tracking, importing, ranking and manual editing. Codex uses an installed, authenticated command-line helper. Its local model catalogue supplies the model and reasoning choices; a listed choice does not guarantee current account access. Job Radar settings do not change another open Codex conversation.

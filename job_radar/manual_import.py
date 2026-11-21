@@ -25,7 +25,8 @@ def import_manual_job(db: JobDatabase, path: Path, *, dry_run: bool = False,
 
 def import_manual_data(db: JobDatabase, raw: dict, *, dry_run: bool = False,
                        source: str | None = None, on_date: date | None = None,
-                       identity_key: str | None = None) -> tuple[str, str]:
+                       identity_key: str | None = None, first_seen_at: str | None = None,
+                       last_verified_at: str | None = None) -> tuple[str, str]:
     """Import without fetching pages or using AI; preserve omitted existing fields."""
     if identity_key is not None and not re.fullmatch(r"job_ext_[0-9a-f]{24}", identity_key):
         raise ValueError("External job identity must be a validated connector identity.")
@@ -117,7 +118,8 @@ def import_manual_data(db: JobDatabase, raw: dict, *, dry_run: bool = False,
         action = "new" if existing is None else "unchanged" if existing["payload_hash"] == digest else "changed"
         return job_id, action
     ensure_tracking_schema(db)
-    job_id, action = db.upsert_job(job, job_id=job_id)
+    job_id, action = db.upsert_job(job, job_id=job_id, first_seen_at=first_seen_at,
+                                   last_verified_at=last_verified_at)
     if get_application(db, job_id) is None:
         update_application(db, job_id, {"status": "interested", "source": chosen_source.strip()}, on_date=on_date)
     return job_id, action

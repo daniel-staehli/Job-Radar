@@ -115,7 +115,8 @@ class JobDatabase:
                 (utc_now(), status, json.dumps(notes, ensure_ascii=False), run_id),
             )
 
-    def upsert_job(self, job: SearchJob, *, job_id: str | None = None) -> tuple[str, str]:
+    def upsert_job(self, job: SearchJob, *, job_id: str | None = None,
+                   first_seen_at: str | None = None, last_verified_at: str | None = None) -> tuple[str, str]:
         now = utc_now()
         job_id = job_id or stable_job_id(job.company, job.title, job.location)
         canonical_url = canonicalize_url(job.source_url)
@@ -217,6 +218,17 @@ class JobDatabase:
                 """,
                 fields,
             )
+            if first_seen_at or last_verified_at:
+                connection.execute(
+                    """UPDATE jobs SET
+                       first_seen_at = CASE WHEN julianday(?) < julianday(first_seen_at)
+                                            THEN ? ELSE first_seen_at END,
+                       last_verified_at = CASE WHEN last_verified_at IS NULL OR
+                                                    julianday(?) > julianday(last_verified_at)
+                                               THEN ? ELSE last_verified_at END
+                       WHERE job_id = ?""",
+                    (first_seen_at, first_seen_at, last_verified_at, last_verified_at, job_id),
+                )
             if action != "unchanged":
                 connection.execute(
                     """

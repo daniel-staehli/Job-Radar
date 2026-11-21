@@ -1,11 +1,13 @@
 """Review employer-feed results before adding them to the application tracker."""
 import tkinter as tk
+from datetime import datetime, timezone
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 from urllib.parse import urlsplit
 from .discovery import suggested_presets
-from .ranking import load_terms, parse_terms, save_terms, term_breakdown
-from . import discovery_match
+from .freshness import DEFAULT_HOURS, FILTERS
+from .ranking import load_hours, load_terms, parse_terms, save_hours, save_terms
+from . import discovery_match, shortlist, work_rights
 from .gui_discovery_match import DiscoveryMatchView
 
 
@@ -14,7 +16,9 @@ class DiscoveryView(DiscoveryMatchView):
         self.presets, self.candidates = [], []
         self.priority_groups = []
         self.candidate_reviews = {}
-        self.discovery_ai_sort = tk.BooleanVar(value=False)
+        self.discovery_ai_sort = tk.BooleanVar(value=True)
+        self.rights_profile = work_rights.empty()
+        self.show_ineligible = tk.BooleanVar(value=False)
         ttk.Label(self.find_tab, text="Find vacancies", style="Heading.TLabel").pack(anchor='w')
         ttk.Label(self.find_tab, text="Search online by role and location, or refresh the Ashby and Greenhouse boards you follow.",
                   style="Muted.TLabel", wraplength=1000).pack(anchor='w', pady=(4, 10))
@@ -34,6 +38,15 @@ class DiscoveryView(DiscoveryMatchView):
         self.discovery_query = tk.StringVar()
         ttk.Entry(filters, textvariable=self.discovery_query).pack(side='left', fill='x', expand=True)
         self.discovery_query.trace_add('write', lambda *_: self._fill_candidates())
+        self.age_filter = ttk.Combobox(filters, state='readonly', values=(shortlist.RECOMMENDED, *FILTERS), width=15)
+        self.age_filter.current(0)
+        self.age_filter.pack(side='left', padx=8)
+        self.age_filter.bind('<<ComboboxSelected>>', lambda _: self._fill_candidates())
+        self.fresh_hours = DEFAULT_HOURS
+        self.age_entry = tk.StringVar(value=str(DEFAULT_HOURS))
+        ttk.Label(filters, text='Fresh within (hours)').pack(side='left')
+        ttk.Entry(filters, width=6, textvariable=self.age_entry).pack(side='left', padx=5)
+        self._button(filters, 'Apply', self.apply_age_window)
         priority = ttk.Frame(self.find_tab)
         priority.pack(fill='x', pady=(0, 8))
         ttk.Label(priority, text='Priority terms').pack(side='left', padx=(0, 8))
@@ -44,14 +57,27 @@ class DiscoveryView(DiscoveryMatchView):
         ai_controls.pack(fill='x', pady=(0, 8))
         self._button(ai_controls, 'Review with Ollama…', self.open_discovery_review)
         self._button(ai_controls, 'View saved match', self.show_candidate_match)
-        ttk.Checkbutton(ai_controls, text='Sort by AI match', variable=self.discovery_ai_sort,
+        ttk.Checkbutton(ai_controls, text='Include confirmed ineligible', variable=self.show_ineligible,
+                        command=self._fill_candidates).pack(side='left', padx=8)
+        ttk.Checkbutton(ai_controls, text='Use saved AI match', variable=self.discovery_ai_sort,
                         command=self._fill_candidates).pack(side='left', padx=(8, 0))
         panels = ttk.Panedwindow(self.find_tab, orient='horizontal')
         panels.pack(fill='both', expand=True)
         listing, details = ttk.Frame(panels), ttk.Frame(panels, padding=(12, 0, 0, 0))
         panels.add(listing, weight=3)
         panels.add(details, weight=2)
-        self.candidate_tree = ttk.Treeview(listing, columns=('company', 'title', 'location', 'terms', 'match'), show='headings', selectmode='browse')
+        self.candidate_tree = ttk.Treeview(listing, columns=('company', 'title', 'priority', 'location', 'age', 'terms', 'match', 'rights', 'network'), show='headings', selectmode='browse')
+        self.candidate_tree.heading('priority', text='Priority')
+        self.candidate_tree.column('priority', width=115, minwidth=85)
+        self.candidate_tree.heading('network', text='Contacts')
+        self.candidate_tree.column('network', width=70, minwidth=60)
+        self.candidate_tree.heading('rights', text='Work authorization')
+        self.candidate_tree.column('rights', width=135, minwidth=105)
+        horizontal = ttk.Scrollbar(listing, orient='horizontal', command=self.candidate_tree.xview)
+        horizontal.pack(side='bottom', fill='x')
+        self.candidate_tree.configure(xscrollcommand=horizontal.set)
+        self.candidate_tree.heading('age', text='Freshness')
+        self.candidate_tree.column('age', width=100, minwidth=75)
         for key, label, width in [('company', 'Employer', 100), ('title', 'Position', 190), ('location', 'Location', 100), ('terms', 'Terms', 60), ('match', 'AI match', 110)]:
             self.candidate_tree.heading(key, text=label)
             self.candidate_tree.column(key, width=width, minwidth=70)
@@ -70,7 +96,9 @@ class DiscoveryView(DiscoveryMatchView):
         actions.pack(side='bottom', fill='x', pady=(12, 0), before=panels)
         self._button(actions, 'Save selected job to tracker', self.save_candidate, primary=True)
         self._button(actions, 'Review in manual form', self.edit_candidate)
-        ttk.Label(self.find_tab, text='Priority example: microscopy; R | Python; Lausanne. Each group counts once. Matches show words mentioned in the vacancy, not a prediction of your suitability.',
+        self._button(actions, 'Vacancy contacts…', lambda: self.network_for_job(feed=True))
+        self.shortlist_summary = tk.StringVar()
+        ttk.Label(self.find_tab, textvariable=self.shortlist_summary,
                   style='Muted.TLabel', wraplength=1000).pack(side='bottom', anchor='w', pady=(8, 0), before=actions)
         self._load_discovery()
         self.tabs.bind('<<NotebookTabChanged>>', self._discovery_tab_selected, add='+')
@@ -83,10 +111,17 @@ class DiscoveryView(DiscoveryMatchView):
     def _load_discovery(self):
         # Reading cached settings/results never contacts an employer.
         try:
+            self.rights_profile, _ = work_rights.load(self.service.root)
+        except (OSError, ValueError) as exc:
+            self.rights_profile = work_rights.empty()
+            self._error(exc)
+        try:
             previous = self.employer_choice.get()
             self.presets = self.service.employer_presets()
             self.candidates = self.service.discovery_candidates()
             expression = load_terms(self.service.root)
+            self.fresh_hours = load_hours(self.service.root)
+            self.age_entry.set(str(self.fresh_hours))
             self.priority_terms.set(expression)
             self.priority_groups = parse_terms(expression)
             labels = ['All saved employers'] + [f"{p['company']} ({p['provider']})" for p in self.presets]
@@ -103,6 +138,13 @@ class DiscoveryView(DiscoveryMatchView):
         except Exception as exc:
             self._error(exc)
 
+    def apply_age_window(self):
+        try:
+            self.fresh_hours = save_hours(self.service.root, self.age_entry.get().strip())
+        except (OSError, ValueError) as exc:
+            return self._error(exc)
+        self._fill_candidates()
+
     def _fill_candidates(self):
         self.candidate_reviews = discovery_match.saved_reviews(self.service.root, self.candidates)
         selected = self.candidate_tree.selection()
@@ -110,25 +152,57 @@ class DiscoveryView(DiscoveryMatchView):
         employer_index = self.employer_choice.current()
         preset_id = self.presets[employer_index - 1]['id'] if 0 < employer_index <= len(self.presets) else None
         self.candidate_tree.delete(*self.candidate_tree.get_children())
-        ordered = sorted(self.candidates, key=lambda item: -term_breakdown(item, self.priority_groups)['count']) if self.priority_groups else self.candidates
-        if self.discovery_ai_sort.get():
-            ordered = sorted(ordered, key=lambda item: discovery_match.rank(self.candidate_reviews.get(item['id'])))
-        for item in ordered:
+        now = datetime.now(timezone.utc)
+        age_filter = self.age_filter.get()
+        excluded = 0
+        deferred = 0
+        self.recommendations = {}
+        visible = []
+        for item in self.candidates:
             if preset_id and item.get('preset_id') != preset_id:
                 continue
             if query and query not in ' '.join(str(item.get(k, '')) for k in ('company', 'title', 'location', 'work_mode')).casefold():
                 continue
-            tag = 'alternate' if len(self.candidate_tree.get_children()) % 2 else ''
-            breakdown = term_breakdown(item, self.priority_groups)
+            rec = shortlist.evaluate(item, now=now, hours=self.fresh_hours, profile=self.rights_profile,
+                                     groups=self.priority_groups, network=self.network,
+                                     review=self.candidate_reviews.get(item['id']), use_review=self.discovery_ai_sort.get())
+            self.recommendations[item['id']] = rec
+            if age_filter not in (shortlist.RECOMMENDED, 'All ages', rec.age) and not (age_filter == 'Fresh' and rec.age == 'Programs'):
+                continue
+            if rec.rights.status == work_rights.EXCLUDED and not self.show_ineligible.get():
+                excluded += 1
+                continue
+            if age_filter == shortlist.RECOMMENDED and rec.reasons_to_defer:
+                deferred += 1
+                continue
+            visible.append(item)
+        visible.sort(key=lambda item: self.recommendations[item['id']].sort_key)
+        counts = [f"{len(visible)} shown"]
+        if deferred:
+            counts.append(f"{deferred} for later (choose All ages)")
+        if excluded:
+            counts.append(f"{excluded} hidden by work authorization")
+        self.shortlist_summary.set(" · ".join(counts))
+        for index, item in enumerate(visible):
+            rec = self.recommendations[item['id']]
+            tag = 'alternate' if index % 2 else ''
+            breakdown = rec.terms
             terms = f"{breakdown['count']}/{breakdown['total']}" if breakdown['total'] else ''
             match = discovery_match.label(self.candidate_reviews.get(item['id']))
-            self.candidate_tree.insert('', 'end', iid=item['id'], values=(item['company'], item['title'], item['location'], terms, match), tags=(tag,))
+            age_label = 'Date unverified' if rec.age == 'Date unknown' else rec.age
+            self.candidate_tree.insert('', 'end', iid=item['id'], values=(item['company'], item['title'], rec.label,
+                                       item['location'], age_label, terms, match, rec.rights.status, rec.contacts or ''), tags=(tag,))
         if self.candidate_tree.get_children():
             self.discovery_empty.place_forget()
         else:
             message = ('No employers added yet\n\n1. Choose Manage employers.\n2. Add an employer\'s Ashby or Greenhouse link.\n3. Click Refresh vacancies.' if not self.presets
-                       else 'No vacancies match this filter.\n\nClear Filter results or choose All saved employers.' if self.candidates
+                       else 'No vacancies match these filters.\n\nClear the search and choose All ages and All saved employers.' if self.candidates
                        else 'No vacancies fetched yet\n\nClick Refresh vacancies to check your saved employers.\nA board may also have no published roles.')
+            if excluded:
+                message = f"{excluded} matching vacancies hidden by work authorization. Select Include confirmed ineligible to see them."
+            if deferred:
+                message = f"{deferred} vacancies marked Review later. Choose All ages to review them." + (
+                    f" {excluded} more hidden by work authorization." if excluded else "")
             self.discovery_empty.configure(text=message)
             self.discovery_empty.place(relx=0.5, rely=0.45, anchor='center', relwidth=0.95)
         if selected and self.candidate_tree.exists(selected[0]):
@@ -146,7 +220,8 @@ class DiscoveryView(DiscoveryMatchView):
             item = self._candidate()
             notice = '\nCached result: the last refresh failed. Check the source before applying.\n' if item.get('stale') else ''
             missing = '\nMissing details: ' + ', '.join(item['missing_fields']) + '. Use Review in manual form.\n' if item.get('missing_fields') else ''
-            breakdown = term_breakdown(item, self.priority_groups)
+            rec = self.recommendations[item['id']]
+            breakdown = rec.terms
             priority = ''
             review = self.candidate_reviews.get(item['id'])
             match = ''
@@ -162,8 +237,14 @@ class DiscoveryView(DiscoveryMatchView):
                 absent = '; '.join(breakdown['missing']) or 'None'
                 priority = f"\nPriority groups mentioned: {breakdown['count']}/{breakdown['total']}\nMatched: {matched}\nNot mentioned: {absent}\n"
             text = (f"{item['title']}\n{item['company']} · {item['location']}\n\n"
-                    f"Source: {item['provider']}\n{item['source_url']}\n"
-                    f"Fetched: {item.get('fetched_at', '')}\n{notice}{missing}{priority}{match}\n{item.get('description', '')}")
+                    f"Why this priority\n{rec.explanation()}\n\nSource: {item['provider']}\n{item['source_url']}\n"
+                    f"Published: {item.get('published_at') or item.get('posted_date') or 'Date unverified'}\n"
+                    f"First seen: {item.get('first_seen_at') or item.get('fetched_at') or 'Unknown'}\n"
+                    f"{rec.rights.details()}\n"
+                    f"{self.network.summary(item)}\n"
+                    f"Last verified on feed: {item.get('last_verified_at') or item.get('fetched_at') or 'Unknown'}\n"
+                    + ('Possible repost; original publication date unverified.\n' if item.get('possible_repost') else '')
+                    + f"{notice}{missing}{priority}{match}\n{item.get('description', '')}")
         except (ValueError, StopIteration):
             text = ('Select a vacancy to read its full description.\n\nNothing is added to your tracker until you choose Save selected job.'
                     if self.candidates else 'Your employer vacancies will appear here.\n\n1. Add a board in Manage employers.\n2. Refresh vacancies.\n3. Review and save the roles you want.')

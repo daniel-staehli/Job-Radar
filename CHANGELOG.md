@@ -1,5 +1,12 @@
 # Change history
 
+## 0.10.0 — 22 November 2026 (beta)
+
+- Find jobs opens with a ranked employer-feed shortlist. Each vacancy explains its freshness, work authorization, term matches, saved AI review and matching contacts.
+- Set a freshness window and review older or undated postings separately. Programs and open applications remain eligible regardless of age.
+- Record work authorization in My profile and maintain contacts in My Network. Employer matching, LinkedIn CSV import and ranking run locally. Contact notes and work authorization records stay separate from AI prompts.
+- Review deferred vacancies under **All ages**. Optional Ollama reviews follow the visible ranking and skip stale or confirmed ineligible vacancies.
+
 ## 0.9.0 — 17 November 2026 (beta)
 
 - Export completed applications to editable Word documents, with separate CV and letter layouts, supported custom templates and no AI request.

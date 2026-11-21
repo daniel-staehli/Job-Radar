@@ -4,7 +4,7 @@ from __future__ import annotations
 from copy import deepcopy
 from urllib.parse import urlsplit
 
-from . import discovery, job_match
+from . import discovery, job_match, work_rights
 from .cancellation import GenerationCancelled, check_cancelled
 from .normalize import canonicalize_url
 from .providers import normalize_settings, provider_identity
@@ -87,9 +87,12 @@ def review_candidates(root, candidates: list[dict], settings: dict, *, reuse=Tru
     # Validate the profile and every selected input before the first model call.
     profile_hash = job_match._hash(job_match._profile_snapshot(root))
     jobs = [candidate_job(item) for item in selected]
+    rights_profile, _ = work_rights.load(root)
     for item, job in zip(selected, jobs):
         if item.get("stale"):
             raise ValueError("Some selected vacancies are from a failed refresh. Refresh successfully or exclude them first.")
+        if work_rights.assess(item, rights_profile).status == work_rights.EXCLUDED:
+            raise ValueError("A selected vacancy is confirmed ineligible under your saved work authorization. Review your selection before starting Ollama.")
         job_match._job_snapshot(job)
     previous = saved_reviews(root, selected) if reuse else {}
     result = {"reviewed": [], "reused": [], "errors": [], "cancelled": False}
