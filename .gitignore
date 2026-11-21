@@ -4,6 +4,7 @@
 /reports/
 /work/
 *.sqlite*
+[Cc]onnections.csv
 *.db
 *.bak
 *.zip

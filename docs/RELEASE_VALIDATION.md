@@ -1,8 +1,12 @@
 # Release validation
 
-Source candidate: **0.9.0 beta**, checked **17 November 2026**. This records local checks, not a claim that a GitHub release or CI run has already completed.
+## 0.10.0 beta · 22 November 2026
 
-## Current candidate
+- On Windows with Python 3.12, the source ZIP was extracted into a new directory. A fresh virtual environment installed the locked dependencies from the package index. Initialization created the three fictional example files, CLI help opened, and the desktop app opened all eight tabs with **Recommended** selected in Find jobs. The app closed successfully.
+- The source and history privacy check covered 194 source files and 202 earlier file versions. It flagged no private paths, contact exports, known personal contact details or credentials.
+- The [Tests workflow](https://github.com/daniel-staehli/Job-Radar/actions/workflows/tests.yml) downloads the revision under test on Windows and macOS, follows the editable pip installation instructions, initializes the example workspace and opens the app. Its run history records the platform results for each revision. Interactive checks with your own documents and models remain a separate step.
+
+## 0.9.0 beta · 17 November 2026
 
 - Prepared from the previously sanitized public source, with Word export and local Ollama discovery reviews merged from the working application. Personal configuration, reference documents, databases, generated applications and credentials are excluded.
 - Automated allowlist and credential-pattern scan: 180 source files checked. Targeted private-contact, personal-path and career-fact scans found no matches. The two existing commits use GitHub noreply identities; 173 distinct historical blobs passed the same checks. Scanning cannot guarantee the absence of all private information.
@@ -20,7 +24,7 @@ Source candidate: **0.9.0 beta**, checked **17 November 2026**. This records loc
 
 The local application previously completed a real native Ollama CV/letter request with the updated context handling. That is evidence for that specific local configuration, not a validation of every model/provider or of the prose quality. The public suite makes no billed model requests.
 
-## Still to verify
+## Outstanding at the 0.9.0 check
 
 - GitHub-hosted CI after the repository exists. The supplied workflow targets Windows with Python 3.11 and 3.12; this document does not claim those remote runs have happened.
 - A real download and installation from GitHub on another Windows setup and on macOS. Linux also lacks end-to-end installation verification. Non-Windows file-opening behavior has mocked tests only.

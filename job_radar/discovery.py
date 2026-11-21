@@ -23,6 +23,7 @@ from uuid import uuid4
 import httpx
 
 from .db import JobDatabase, utc_now
+from .freshness import instant, observe
 from .manual_import import import_manual_data
 from .normalize import canonicalize_url
 
@@ -179,6 +180,8 @@ def list_candidates(root: Path) -> list[dict]:
             state = boards.get(preset["id"], {})
             for candidate in state.get("candidates", []):
                 result.append({**candidate, "company": preset["company"],
+                               "first_seen_at": candidate.get("first_seen_at", candidate.get("fetched_at")),
+                               "last_verified_at": candidate.get("last_verified_at", candidate.get("fetched_at")),
                                "stale": bool(state.get("error")),
                                "refresh_error": state.get("error")})
         return sorted(result, key=lambda row: (_text(row.get("company")).casefold(),
@@ -249,6 +252,7 @@ def _candidate(preset: dict, row: dict, fetched_at: str) -> dict | None:
         secondary_locations = [_text(item.get("location")) for item in secondary if isinstance(item, dict)] if isinstance(secondary, list) else []
         extras = {"apply_url": _url(row.get("applyUrl")) or None, "work_mode": work_mode,
                   "employment_type": _text(row.get("employmentType")) or None,
+                  "published_at": _text(row.get("publishedAt")) or None,
                   "posted_date": _text(row.get("publishedAt")).split("T")[0] or None,
                   "country": country, "secondary_locations": [v for v in secondary_locations if v]}
     else:
@@ -262,7 +266,10 @@ def _candidate(preset: dict, row: dict, fetched_at: str) -> dict | None:
         description = _plain(row.get("content"))
         # updated_at is not a publication date; absent information stays unknown.
         extras = {"apply_url": None, "work_mode": "unknown", "employment_type": None,
-                  "posted_date": None, "country": None, "secondary_locations": []}
+                  "published_at": _text(row.get("first_published")) or None,
+                  "posted_date": _text(row.get("first_published")).split("T")[0] or None,
+                  "requisition": str(row.get("internal_job_id") or "") or None,
+                  "country": None, "secondary_locations": []}
     candidate = {"id": "candidate_" + _digest(provider, preset["board"], external_id),
                  "preset_id": preset["id"], "provider": provider, "board": preset["board"],
                  "external_id": external_id, "company": preset["company"], "title": _text(row.get("title")),
@@ -325,7 +332,8 @@ def refresh_presets(root: Path, preset_ids: list[str] | None = None) -> dict:
                 candidates = [candidate for candidate in candidates if candidate is not None]
                 if len({candidate["id"] for candidate in candidates}) != len(candidates):
                     raise ValueError("The employer feed contains duplicate posting identities; refresh again later.")
-                state = {"candidates": candidates, "last_success_at": stamp,
+                observations = observe(previous, candidates, stamp)
+                state = {"candidates": candidates, "observations": observations, "last_success_at": stamp,
                          "last_attempt_at": stamp, "error": None}
             except (httpx.HTTPError, ValueError) as exc:
                 if isinstance(exc, httpx.HTTPStatusError):
@@ -376,4 +384,8 @@ def import_candidate(db: JobDatabase, candidate: dict) -> tuple[str, str]:
     raw["evidence"] = [f"Published employer feed: {preset['provider']}; board: {preset['board']}; posting: {external_id}"]
     if candidate.get("secondary_locations"):
         raw["evidence"].append("Other published locations: " + "; ".join(map(str, candidate["secondary_locations"])))
-    return import_manual_data(db, raw, source=preset["provider"].title(), identity_key="job_ext_" + expected)
+    first = instant(candidate.get("first_seen_at") or candidate.get("fetched_at"))
+    verified = instant(candidate.get("last_verified_at") or candidate.get("fetched_at"))
+    return import_manual_data(db, raw, source=preset["provider"].title(), identity_key="job_ext_" + expected,
+                              first_seen_at=first.isoformat() if first else None,
+                              last_verified_at=verified.isoformat() if verified else None)

@@ -4,7 +4,7 @@ import queue
 import tkinter as tk
 from tkinter import ttk
 
-from . import discovery_match, job_match
+from . import discovery_match, job_match, work_rights
 from .cancellation import CancellationToken, cancellation_scope
 from .providers import describe
 
@@ -33,10 +33,13 @@ class DiscoveryMatchView:
             if self._profile_has_unsaved_changes():
                 raise ValueError('Save your changes in My profile before reviewing vacancies.')
             settings = discovery_match.local_settings(self._selected_ai())
-            visible = set(self.candidate_tree.get_children())
-            candidates = deepcopy([item for item in self.candidates if item['id'] in visible])
+            visible = self.candidate_tree.get_children()
+            lookup = {item['id']: item for item in self.candidates}
+            profile, _ = work_rights.load(self.service.root)
+            candidates = deepcopy([lookup[key] for key in visible if not lookup[key].get('stale')
+                                   and work_rights.assess(lookup[key], profile).status != work_rights.EXCLUDED])
             if not candidates:
-                raise ValueError('Refresh vacancies first, or clear the current filter.')
+                raise ValueError('No visible vacancies are available for review. Refresh the feed or adjust the filters. Confirmed ineligible and stale listings are skipped.')
             job_match._profile_snapshot(self.service.root)
         except (ValueError, OSError) as exc:
             return self._error(exc)
@@ -49,7 +52,7 @@ class DiscoveryMatchView:
         frame = ttk.Frame(dialog, padding=18)
         frame.pack(fill='both', expand=True)
         ttk.Label(frame, text='Choose up to 10 vacancies', style='Heading.TLabel').pack(anchor='w')
-        ttk.Label(frame, text='Ctrl-click to select several. Reviews compare fetched vacancy text with your saved profile; they do not search the web or add jobs to your tracker.',
+        ttk.Label(frame, text='Ctrl-click to select several. Vacancies follow the shortlist order. Confirmed ineligible and stale listings are skipped.',
                   wraplength=760).pack(anchor='w', pady=(6, 8))
         ttk.Label(frame, text='Uses ' + describe(settings) + '\nSends the selected vacancies and relevant saved profile facts to your local Ollama server. No OpenAI request is made.',
                   wraplength=760, style='Muted.TLabel').pack(anchor='w', pady=(0, 12))

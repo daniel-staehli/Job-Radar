@@ -233,6 +233,7 @@ class ProfileView:
         actions.pack(fill="x", pady=(0, 8))
         self._button(actions, "Save profile", self.save_profile, primary=True)
         self._button(actions, "Reload saved profile", self.reload_profile)
+        self._button(actions, "Work authorization…", self.open_work_rights)
         self.profile_notice = tk.StringVar(value="Loading your saved profile…")
         ttk.Label(self.profile_tab, textvariable=self.profile_notice, wraplength=980, style="Muted.TLabel").pack(anchor="w", pady=(0, 8))
         imports = ttk.LabelFrame(self.profile_tab, text="Suggest additions from a reference CV", padding=10)
@@ -446,6 +447,16 @@ class ProfileView:
             self.profile_suggestions_dialog = ProfileSuggestionsDialog(self, package)
         self._run("Reviewing your selected CV for profile additions…", action, done,
                   lambda exc: self.profile_notice.set("CV review did not finish. Your saved profile is unchanged. " + str(exc)))
+
+
+    def open_work_rights(self):
+        from . import work_rights
+        from .gui_work_rights import WorkRightsDialog
+        try:
+            profile_data, fingerprint = work_rights.load(self.service.root)
+            return WorkRightsDialog(self, profile_data, fingerprint)
+        except (ValueError, OSError) as exc:
+            self._error(exc)
 
 
 class ProfileSuggestionsDialog:

@@ -20,6 +20,8 @@ from .gui_ai import AiSettingsView
 from .gui_job_context import JobContextView
 from .gui_manual_edit import ManualEditView
 from .gui_word_export import WordExportView
+from .gui_network import NetworkView
+from . import work_rights
 from .gui_profile import ProfileView
 from .gui_match import MatchView
 from .gui_import import ImportView
@@ -31,7 +33,7 @@ from .generation_state import finish_outputs, mark_incomplete
 from .tracking import STATUSES
 
 
-class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView, ProfileView, MatchView, ImportView, WordExportView):
+class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView, ProfileView, MatchView, ImportView, WordExportView, NetworkView):
     def __init__(self, window: tk.Tk, service: GuiService | None = None):
         self.window = window
         self.service = service or GuiService()
@@ -83,6 +85,8 @@ class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView,
         self.profile_tab = self._tab("My profile")
         self.docs_tab = self._tab("Create documents")
         self.review_tab = self._tab("Review & improve")
+        self.network_tab = self._tab("My Network")
+        self._build_network()
         self._build_jobs()
         self._build_discovery()
         self._build_import()
@@ -190,6 +194,10 @@ class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView,
         self.job_tree.bind("<<TreeviewSelect>>", self._job_selected)
         self.job_heading = tk.StringVar(value="Select a job to view its details")
         ttk.Label(right, textvariable=self.job_heading, style="Heading.TLabel", wraplength=360).pack(anchor="w", pady=(0, 6))
+        self.job_rights = tk.StringVar(value="")
+        ttk.Label(right, textvariable=self.job_rights, style="Muted.TLabel").pack(anchor="w")
+        self.job_network = tk.StringVar(value="My Network")
+        ttk.Button(right, textvariable=self.job_network, command=self.network_for_job).pack(anchor="w")
         form = ttk.Frame(right)
         form.pack(fill="x")
         names = [("status", "Status"), ("application_date", "Applied (YYYY-MM-DD)"),
@@ -618,6 +626,8 @@ class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView,
         self.selected_job = current
         if current is None:
             self.job_heading.set("Select a job to view its details")
+            self.job_rights.set("")
+            self.job_network.set("My Network")
             for variable in self.tracking.values():
                 variable.set('')
             self.notes.delete('1.0', 'end')
@@ -625,6 +635,8 @@ class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView,
             self.tracking_notice.set("Select a job to edit its progress.")
             return
         self.job_heading.set(f"{self.selected_job['company']} — {self.selected_job['title']}")
+        self.job_rights.set("Work authorization · " + work_rights.assess(current, self.rights_profile).status)
+        self.job_network.set(self._network_count(current))
         for name, value in self.tracking.items():
             current = self.selected_job.get(name)
             if name == 'status' and current == 'untracked':
@@ -1105,7 +1117,8 @@ class JobRadarApp(DiscoveryView, AiSettingsView, JobContextView, ManualEditView,
         job = self.selected_job
         text = (f"{job['title']}\n{job['company']} — {job.get('location', '')}\n\n"
                 f"{job.get('source_url', '')}\n\n{job.get('description', '')}")
-        self._show_text("Saved vacancy details", text)
+        self._show_text("Saved vacancy details", self.network.summary(job) + "\n\n"
+                        + work_rights.assess(job, self.rights_profile).details() + "\n\n" + text)
 
     def _show_text(self, title, text):
         window = tk.Toplevel(self.window)

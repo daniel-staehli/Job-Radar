@@ -115,3 +115,21 @@ def test_non_ollama_and_unsaved_profile_are_rejected_before_opening(app):
     app.dirty = True
     app.open_discovery_review()
     assert 'Save your changes' in app.errors[-1]
+
+
+def test_picker_preserves_ranked_order_and_skips_stale_and_ineligible(app):
+    from job_radar import work_rights
+    profile, fingerprint = work_rights.load(app.service.root)
+    profile["rights"]["US"] = dict(status="Require employer sponsorship", permit="", visa="", expires="")
+    work_rights.save(app.service.root, profile, fingerprint)
+    first, second, third, fourth = app.candidates[:4]
+    first["stale"] = True
+    second.update(location="United States", description="No visa sponsorship available.")
+    app.candidate_tree.delete(*app.candidate_tree.get_children())
+    for row in [first, fourth, second, third]:
+        app.candidate_tree.insert("", "end", iid=row["id"])
+    app.open_discovery_review()
+    tree = next(w for w in descendants(app._discovery_review_dialog) if isinstance(w, ttk.Treeview))
+    assert tree.get_children() == (fourth["id"], third["id"])
+    assert tree.selection() == (fourth["id"],)
+    assert not app.calls

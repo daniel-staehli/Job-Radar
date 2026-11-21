@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import re
 import unicodedata
+from .freshness import DEFAULT_HOURS
 
 
 def parse_terms(expression: str) -> list[list[str]]:
@@ -43,10 +44,10 @@ def term_breakdown(candidate: dict, groups: list[list[str]]) -> dict:
     return {'matched': matched, 'missing': missing, 'count': len(matched), 'total': len(groups)}
 
 
-def load_terms(root: Path) -> str:
+def _preferences(root: Path) -> dict:
     path = Path(root) / 'data/discovery_preferences.json'
     if not path.exists():
-        return ''
+        return {'version': 1, 'terms': '', 'hours': DEFAULT_HOURS}
     if path.stat().st_size > 16_384:
         raise ValueError('The saved priority terms file is too large.')
     value = json.loads(path.read_text(encoding='utf-8'))
@@ -54,15 +55,42 @@ def load_terms(root: Path) -> str:
         raise ValueError('The saved priority terms have an unsupported format.')
     terms = value.get('terms')
     parse_terms(terms)
-    return terms
+    value.setdefault('hours', DEFAULT_HOURS)
+    validate_hours(value['hours'])
+    return value
+
+
+def validate_hours(hours):
+    if not re.fullmatch(r'[0-9]{1,6}', str(hours)) or int(hours) < 1:
+        raise ValueError('Enter a positive number of hours (up to six digits).')
+    return int(hours)
+
+
+def load_terms(root: Path) -> str:
+    return _preferences(root)['terms']
+
+
+def load_hours(root: Path) -> int:
+    return validate_hours(_preferences(root)['hours'])
 
 
 def save_terms(root: Path, terms: str) -> list[list[str]]:
     groups = parse_terms(terms)
+    _save_preferences(root, terms=terms)
+    return groups
+
+
+def save_hours(root: Path, hours: str) -> int:
+    hours = validate_hours(hours)
+    _save_preferences(root, hours=hours)
+    return hours
+
+
+def _save_preferences(root, **changes):
+    value = {**_preferences(root), **changes}
     path = Path(root) / 'data/discovery_preferences.json'
     path.parent.mkdir(parents=True, exist_ok=True)
     # One GUI action writes a small complete preference file; no user facts.
     temporary = path.with_suffix('.tmp')
-    temporary.write_text(json.dumps({'version': 1, 'terms': terms}, ensure_ascii=False, indent=2), encoding='utf-8')
+    temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding='utf-8')
     temporary.replace(path)
-    return groups

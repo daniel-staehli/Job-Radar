@@ -78,9 +78,9 @@ def save_through_form(app, **changes):
     return app.selected_job["job_id"]
 
 
-def test_window_opens_with_seven_tabs_and_creates_no_data(app, tmp_path):
+def test_window_opens_with_expected_tabs_and_creates_no_data(app, tmp_path):
     assert [app.tabs.tab(tab, "text") for tab in app.tabs.tabs()] == [
-        "Jobs", "Find jobs", "Add a job", "Reference library", "My profile", "Create documents", "Review & improve",
+        "Jobs", "Find jobs", "Add a job", "Reference library", "My profile", "Create documents", "Review & improve", "My Network",
     ]
     assert app.window.state() == "withdrawn"
     assert app.window.minsize() == (960, 680)

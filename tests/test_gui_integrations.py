@@ -218,6 +218,7 @@ def test_duplicate_title_document_selection_survives_reordered_refresh(app, monk
 
 
 def test_local_priority_ranking_counts_alternatives_once_and_keeps_tracker_empty(app):
+    app.age_filter.set('All ages')
     first = candidate(app, 601, content='<p>Microscopy with Python and R.</p>')
     second = candidate(app, 602, content='<p>Finance operations and reporting.</p>')
     app.candidates = [second, first]

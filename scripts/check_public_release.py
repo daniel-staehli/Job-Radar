@@ -6,6 +6,7 @@ can be detected. Review the staged diff as well. No network requests are made.
 from __future__ import annotations
 
 import argparse
+import csv
 from pathlib import Path, PurePosixPath
 import re
 import stat
@@ -45,6 +46,8 @@ def path_problem(name: str) -> str | None:
         return 'empty source path'
     if path.name.startswith('.env') and name != '.env.example':
         return 'environment/credential file'
+    if path.name.casefold() == 'connections.csv':
+        return 'private LinkedIn connections export'
     notice_build = path.parts[:2] == ('third_party_licenses', 'build')
     if any((part in SKIP_DIRS and not (notice_build and part == 'build'))
            or part.endswith('.egg-info') or part.startswith('.venv')
@@ -72,6 +75,12 @@ def check_content(name: str, content: bytes) -> list[str]:
         return problems + [f'{name}: non-text file needs explicit review']
     if '\x00' in text:
         problems.append(f'{name}: binary content')
+    if name.casefold().endswith('.csv'):
+        for line in text.splitlines():
+            cells = next(csv.reader([line]), [])
+            if {'first name', 'last name', 'company', 'position'} <= {c.strip().casefold() for c in cells}:
+                problems.append(f'{name}: possible private connections export')
+                break
     for label, pattern in SECRET_PATTERNS.items():
         if pattern.search(text):
             problems.append(f'{name}: possible {label} (value omitted)')

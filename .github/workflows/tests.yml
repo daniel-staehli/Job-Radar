@@ -2,6 +2,7 @@ name: Tests
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -9,6 +10,41 @@ permissions:
   contents: read
 
 jobs:
+  install:
+    name: Download and open / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Set up Python with Tk
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Download this revision and test the documented installation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/zipball/$GITHUB_SHA" > source.zip
+          unset GH_TOKEN
+          python -m zipfile -e source.zip unpacked
+          cd unpacked/*/
+          python -m venv .venv
+          if [[ "$RUNNER_OS" == Windows ]]; then
+            py=.venv/Scripts/python.exe
+          else
+            py=.venv/bin/python
+          fi
+          "$py" -m pip install -e ".[dev]"
+          "$py" scripts/initialize_workspace.py
+          "$py" job_radar.py --help
+          "$py" -c "import tkinter as tk; from job_radar.gui import JobRadarApp; window=tk.Tk(); app=JobRadarApp(window); window.update(); assert app.age_filter.get() == 'Recommended'; app._close(); assert app._closed"
+
   windows:
     name: Windows / Python ${{ matrix.python-version }}
     runs-on: windows-latest

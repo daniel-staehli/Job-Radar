@@ -1,5 +1,33 @@
 # Job Radar desktop guide
 
+## My Network
+
+Open **My Network → Import connections CSV…** and choose the extracted English-header `Connections.csv` from your [official LinkedIn data export](https://www.linkedin.com/help/linkedin/answer/a566336/exporting-connections-from-linkedin). You can also add, edit or delete contacts manually. The import uses names, employer, position and profile URLs. It ignores emails and the date you connected. Use **Last interaction** for the date you actually spoke. Repeat imports update nonempty employment details while keeping your notes, relationship strength, interaction dates and vacancy links. A profile URL identifies a contact. Without one, matching needs an unambiguous name and employer. The import reports skipped records.
+
+Employer matching ignores capitalization, accents and common legal suffixes. **Employer aliases…** lets you group a subsidiary or alternative name with a parent. **Find jobs → Vacancy contacts…** shows matches first and lets you link another contact to the vacancy. In **Jobs**, click the contact count below the job heading for the same controls. Removing a manual link keeps any independent employer match. Within the same freshness, term and selected AI-match priority, a matching contact moves the vacancy up, with stronger relationships first.
+
+Contacts, aliases and associations are stored in `data/network.sqlite3` on your computer. The importer reads the selected CSV in place. Network records stay separate from application files, AI prompts and Git-tracked source. Importing or matching contacts makes no request to LinkedIn and sends no messages.
+
+## Work authorization
+
+Choose **My profile → Work authorization…**. Record your citizenships and, for each relevant work country, any existing permit or visa type, the expiry date if applicable, and what you have confirmed about your right to take a new job. Switching countries keeps your edits in the form. **Save work authorization** saves them together. Use **Clear selected country**, then save, to remove an entry. These settings live in the private local data directory, separately from the profile used for CVs, letters and AI reviews.
+
+**Find jobs** shows an authorization assessment for each employer-feed vacancy. Select a row for the reason and relevant employer wording. Saved jobs also show the assessment and keep their tracking history. **Authorized** means a general citizenship route or a current work right you explicitly confirmed. Specific job, permit or registration conditions still apply. Missing evidence, ambiguous locations and conditional documents give **Needs verification**. A saved preference by itself never excludes a vacancy. When you explicitly record that you require sponsorship and a single-country posting clearly rules it out, **Confirmed ineligible** hides it from the default feed list. **Include confirmed ineligible** brings it back.
+
+The country rules use official guidance on [Swiss employment](https://www.ch.ch/en/foreign-nationals-in-switzerland/working-in-switzerland/), [EU work permits and Liechtenstein quotas](https://europa.eu/youreurope/citizens/work/work-abroad/work-permits/index_en.htm), [EEA free movement](https://www.efta.int/eea/policy-areas/persons), [Swiss citizens working abroad](https://www.eda.admin.ch/en/country-dossier-eu-efta-employment) and the [UK–Ireland Common Travel Area](https://www.gov.uk/government/publications/common-travel-area-guidance/common-travel-area-guidance).
+
+For other immigration statuses, verify the terms of the specific document. Official guidance is available for the [UK](https://www.gov.uk/prove-right-to-work), [United States](https://www.uscis.gov/working-in-the-united-states), [Singapore](https://www.mom.gov.sg/passes-and-permits), [Australia](https://immi.homeaffairs.gov.au/visas/working-in-australia), [New Zealand](https://www.immigration.govt.nz/work/visas-for-working-in-new-zealand/) and [Qatar](https://portal.www.gov.qa/wps/wcm/connect/Hukoomi%2BWeb%2BContent/Hukoomi/Topics/Employment%2Band%2BWorkplace/workinginqatar). Country rules reviewed 21 November 2026.
+
+## Recommended vacancies
+
+**Find jobs** opens in **Recommended**. Select a vacancy and read **Why this priority** for the factors behind its position. Fresh vacancies come first, followed by programs of any age and postings with an unverified date. Within each group, Job Radar considers work authorization, current saved AI fit (if enabled), the number of matching priority terms, your strongest matching contact and publication time. An unknown date or work right is marked **Verify details**.
+
+**All ages** also shows vacancies marked **Review later**. These are older postings, results from a failed feed refresh, poor current matches, and roles mentioning none of your chosen term groups unless a current review finds a strong or plausible fit. To inspect confirmed ineligible roles as well, tick **Include confirmed ineligible**. All these filters leave the tracker and feed cache intact.
+
+The default freshness window is 48 hours. Enter another number and click **Apply**. **Fresh** includes programs and spontaneous applications of any age. **Programs**, **Date unknown** and **Older** show individual groups. Use priority terms such as `microscopy; R | Python` to count either programming language as one group.
+
+Select a result to see its publication, first-seen and last successful feed verification dates. Refreshing a posting does not restart its publication clock. A calendar date without a time is evaluated from midnight UTC. The filters apply to saved employer feeds. Brave returns web links without verified publication dates.
+
 **Search beyond saved employers.** Set the environment variable `BRAVE_SEARCH_API_KEY` on your computer and restart Job Radar. In **Find jobs → Search by role online…**, enter a role and optional location, then click **Search with Brave**. Each search requests up to ten web links, including possible generic or expired pages. Choose a result and click **Fetch selected posting** to review the employer’s page in **Add a job**. Save the reviewed job, select it in **Create documents**, and use **Ollama (local)** in AI settings to generate both drafts on your computer. Only your search terms and location are sent to Brave. Search API usage is billed under your Brave plan.
 
 Complete [setup](README.md#setup-on-windows), then double-click **Open Job Radar.cmd**. The seven tabs share the same local database and application folders as the terminal commands. No model connection is needed to browse records or track progress.
@@ -203,7 +231,7 @@ This first version supports text, tables, styles and page settings. It rejects i
 1. In **AI settings**, choose **Ollama (local)**, select your installed model and save. Use a local address such as `http://localhost:11434/api`. This feature does not switch your provider automatically.
 2. Open **Find jobs**, refresh your saved employer boards and optionally filter the results.
 3. Click **Review with Ollama…**. Select one to ten vacancies with Ctrl-click, then **Review selected vacancies**.
-4. The **AI match** column shows Strong, Plausible, Stretch, Poor or Insufficient evidence. **Sort by AI match** puts stronger documented matches first; this is not a hiring probability.
+4. The **AI match** column shows the saved assessment. **Use saved AI match** includes current assessments in the shortlist order. You can switch it off to rank entirely by the local rules. The Ollama picker follows the visible shortlist order and skips stale and confirmed ineligible vacancies.
 5. Select a vacancy and choose **View saved match** for the explanation, quoted requirements, profile evidence and gaps.
 
 The model reviews already fetched vacancy text against your saved profile. It does not search the wider web, submit applications, change your profile or save vacancies into Jobs. Use **Save selected job to tracker** for vacancies you want to pursue. Fetching employer feeds and keyword ranking still use no AI.
